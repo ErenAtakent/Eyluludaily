@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Eylülü Daily</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    /* ============ GENEL ============ */
+    *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Arial,Helvetica,sans-serif}
+    body{background:#fff5fa;color:#333;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    h1,h2{text-align:center;margin-bottom:10px}
+    button,input{padding:8px 14px;border:2px solid #ff9ac6;border-radius:6px;background:#ffe3ef}
+    button{cursor:pointer;font-weight:600;margin-top:8px}
+    a{color:#d33777;text-decoration:none}
+    /* ============ GİRİŞ EKRANI ============ */
+    #login-screen{max-width:320px;text-align:center;border:3px dashed #ff9ac6;border-radius:12px;padding:28px;background:#fff}
+    #login-screen h2{color:#d33777;margin-bottom:6px}
+    #error-message{margin-top:6px}
+    /* ============ ANA İÇERİK ============ */
+    #main-content{display:none;max-width:720px;width:100%;margin:auto}
+    header{margin-bottom:24px}
+    .progress-bar{width:100%;height:20px;background:#ffe3ef;border-radius:10px;overflow:hidden}
+    .progress-bar .fill{height:100%;background:#ff9ac6;width:0%}
+    section{background:#fff;border:2px solid #ffd0e6;border-radius:12px;padding:16px;margin-bottom:18px}
+    /* ============ TAKVİM ============ */
+    #calendar-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+    .day{position:relative;padding-top:100%;background:#ffe3ef;border-radius:6px;text-align:center;font-size:14px}
+    .day.past::after{content:"❤️";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+    .day.today{outline:3px solid #ff4f94}
+    /* ============ KALP YAĞMURU ============ */
+    .heart{position:fixed;width:20px;height:20px;background:url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 32 29\"><path fill=\"%23ff4f94\" d=\"M23.6 0c-3.1 0-5.4 1.8-7.6 4.3C13.9 1.8 11.6 0 8.4 0 3.8 0 0 3.8 0 8.4c0 7.3 5.7 9.8 15.9 20.3L16 29l.1-.1C26.3 18.2 32 15.7 32 8.4 32 3.8 28.2 0 23.6 0z\"/></svg>') no-repeat center/contain;pointer-events:none;animation:fall 3.5s linear forwards}
+    @keyframes fall{0%{transform:translateY(-10vh) scale(0.4) rotate(0deg)}100%{transform:translateY(105vh) scale(0.8) rotate(360deg);opacity:0}}
+</style>
+</head>
+<body>
+
+<!-- -------------- GİRİŞ -------------- -->
+<div id="login-screen">
+  <h2>🤍 Eylülü Daily 🤍</h2>
+  <p>Sadece sana özel, Eylül’üm 🌙</p>
+  <input type="password" id="password-input" placeholder="Şifreyi gir">
+  <button onclick="checkPassword()">Giriş Yap</button>
+  <p id="error-message" style="display:none;color:#d33777;">Şifre yanlış!</p>
+</div>
+
+<!-- -------------- SİTE -------------- -->
+<div id="main-content">
+  <header>
+      <h1>🤍 Eylülü Daily</h1>
+      <p>Bugün <span id="day-count">0</span>. günümüz!</p>
+      <div class="progress-bar"><div class="fill" id="progress-fill"></div></div>
+      <p>6. ayımıza <span id="days-left">0</span> gün kaldı!</p>
+  </header>
+
+  <section id="love-message">
+      <h2>💌 Bugünün Mesajı</h2>
+      <p id="random-message">Yükleniyor...</p>
+  </section>
+
+  <section id="todo-list">
+      <h2>✅ Birlikte Yapacaklarımız</h2>
+      <ul id="tasks" style="list-style:none;line-height:1.6;">
+          <li><label><input type="checkbox"> Göl kenarında piknik yapmak</label></li>
+          <li><label><input type="checkbox"> Aynı filmi izlemek</label></li>
+          <li><label><input type="checkbox"> Birlikte dans etmek</label></li>
+      </ul>
+  </section>
+
+  <section id="calendar">
+      <h2>📅 Kalpli Takvim</h2>
+      <div id="calendar-days"></div>
+  </section>
+
+  <section>
+      <h2>💖 Biraz Kalp Yağsın mı?</h2>
+      <button onclick="startHeartRain()">Kalp Yağmuru Başlat</button>
+  </section>
+</div>
+
+<script>
+/* ---------- AYARLAR ---------- */
+const PASSWORD   = "03032025";
+const START_DATE = new Date("2025-03-03");
+const SIX_MONTHS = new Date("2025-09-03");
+const loveMessages = [
+  "Seninle konuşurken zaman duruyor.",
+  "Gülüşün en güzel şarkı gibi.",
+  "Her gün seni daha çok seviyorum.",
+  "Kalbim 03.03.2025'ten beri seninle atıyor.",
+  "Sen yanımdayken dünya pembe olur."
+];
+
+/* ---------- ŞİFRE KONTROLÜ ---------- */
+function checkPassword(){
+  const val = document.getElementById("password-input").value.trim();
+  if(val === PASSWORD){
+    document.getElementById("login-screen").style.display="none";
+    document.getElementById("main-content").style.display="block";
+    initSite();
+  }else{
+    document.getElementById("error-message").style.display="block";
+  }
+}
+
+/* ---------- SİTE BAŞLAT ---------- */
+function initSite(){
+  dayCounter();
+  randomLoveMessage();
+  buildCalendar();
+}
+
+/* --- GÜN SAYACI & PROGRESS --- */
+function dayCounter(){
+  const now = new Date();
+  const diffDays = Math.floor((now - START_DATE)/(1000*60*60*24));
+  document.getElementById("day-count").textContent=diffDays;
+  
+  const totalDays = Math.floor((SIX_MONTHS - START_DATE)/(1000*60*60*24));
+  const daysLeft  = Math.max(0, Math.ceil((SIX_MONTHS - now)/(1000*60*60*24)));
+  document.getElementById("days-left").textContent=daysLeft;
+  const percent = Math.min(100, ((diffDays/totalDays)*100).toFixed(1));
+  document.getElementById("progress-fill").style.width = percent+"%";
+}
+
+/* --- RASTGELE AŞK MESAJI --- */
+function randomLoveMessage(){
+  const msg = loveMessages[Math.floor(Math.random()*loveMessages.length)];
+  document.getElementById("random-message").textContent = msg;
+}
+
+/* --- TAKVİM OLUŞTUR --- */
+function buildCalendar(){
+  const cal = document.getElementById("calendar-days");
+  const today = new Date();
+  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+  const lastDay  = new Date(today.getFullYear(), today.getMonth()+1, 0);
+  const startWeekDay = firstDay.getDay()===0 ? 7 : firstDay.getDay(); // Pazartesi=1
+  const totalBoxes = startWeekDay-1 + lastDay.getDate();
+  for(let i=1;i<=totalBoxes;i++){
+    const box = document.createElement("div");
+    box.className="day";
+    if(i < startWeekDay){
+      cal.appendChild(box);
+      continue;
+    }
+    const dayNum = i - (startWeekDay-1);
+    box.textContent=dayNum;
+    const dateObj = new Date(today.getFullYear(), today.getMonth(), dayNum);
+    if(dateObj < today){ box.classList.add("past"); }
+    if(dateObj.toDateString() === today.toDateString()){ box.classList.add("today"); }
+    cal.appendChild(box);
+  }
+}
+
+/* --- KALP YAĞMURU --- */
+function startHeartRain(){
+  for(let i=0;i<40;i++){
+    setTimeout(createHeart, Math.random()*1500);
+  }
+}
+function createHeart(){
+  const heart = document.createElement("div");
+  heart.className="heart";
+  heart.style.left = Math.random()*100+"vw";
+  heart.style.animationDuration = 2 + Math.random()*2 + "s";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),3500);
+}
+</script>
+</body>
+</html>

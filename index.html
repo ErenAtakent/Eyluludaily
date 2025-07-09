@@ -5,140 +5,169 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Eylülü Daily 🤍</title>
   <style>
-    * {margin: 0; padding: 0; box-sizing: border-box;}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #fce4ec, #f8bbd0);
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       padding: 30px;
     }
     .container {
+      max-width: 800px;
+      margin: auto;
       background: #fff;
       border-radius: 20px;
       padding: 30px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
     }
-    input[type=password] {
-      padding: 12px;
+    h1, h2 { text-align: center; margin-bottom: 20px; }
+    input[type=password], input[type=text] {
       width: 100%;
-      font-size: 1.1rem;
-      border-radius: 30px;
+      padding: 12px;
+      border-radius: 10px;
       border: 2px solid #d05cae;
-      margin: 20px 0;
-      outline: none;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
     }
     button {
-      padding: 14px 0;
       width: 100%;
-      font-weight: bold;
-      font-size: 1.2rem;
+      padding: 12px;
       border: none;
-      border-radius: 30px;
+      border-radius: 10px;
       background: linear-gradient(90deg, #b23481, #dd4da3);
       color: white;
-      cursor: pointer;
-      box-shadow: 0 5px 20px rgba(221, 77, 163, 0.4);
-    }
-    button:hover {
-      background: linear-gradient(90deg, #dd4da3, #b23481);
-    }
-    #error {
-      color: #d33a5a;
       font-weight: bold;
-      margin-top: 10px;
-      display: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-bottom: 20px;
     }
-    #main-content {
-      display: none;
-    }
-    .days-count, .goal-bar {
-      margin-top: 20px;
-    }
-    .goal-bar {
-      background: #eee;
-      border-radius: 20px;
-      overflow: hidden;
-      height: 20px;
-      margin-top: 10px;
-    }
+    #main-content { display: none; }
+    #error { color: red; text-align: center; margin-bottom: 10px; }
     .goal-bar-fill {
+      height: 20px;
       background: linear-gradient(90deg, #ff80ab, #f06292);
-      height: 100%;
-      width: 0%;
+      border-radius: 20px;
+      color: white;
       text-align: right;
       padding-right: 10px;
-      color: white;
-      font-size: 0.9rem;
       line-height: 20px;
       transition: width 1s ease-in-out;
+    }
+    ul.todo-list li { margin: 5px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    td { width: 14.28%; text-align: center; padding: 10px; border: 1px solid #f0c1d1; }
+    td.special { background: #ffdbe8; font-weight: bold; color: #d05cae; }
+    .message-box {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #ffe4f2;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <div class="container" id="login-box">
-    <h1>🤍 Eylülü Daily 🤍</h1>
-    <input type="password" id="password" placeholder="Şifre: 03032025" />
-    <button onclick="checkPassword()">Giriş Yap</button>
-    <div id="error">Şifre yanlış!</div>
+<div class="container" id="login-box">
+  <h1>🤍 Eylülü Daily 🤍</h1>
+  <input type="password" id="password" placeholder="Şifre: 03032025" />
+  <button onclick="checkPassword()">Giriş Yap</button>
+  <div id="error">Şifre yanlış!</div>
+</div>
+<div class="container" id="main-content">
+  <h1>Hoşgeldin Eylül 🌸</h1>
+
+  <h2>🗓 <span id="daysTogether">0</span> gündür beraberiz</h2>
+
+  <h2>🎯 6 Aylık Hedef</h2>
+  <div class="goal-bar">
+    <div class="goal-bar-fill" id="goalFill">0%</div>
   </div>
 
-  <div class="container" id="main-content">
-    <h1>Hoşgeldin Eylül 🌸</h1>
-    <div class="days-count">
-      <h3>Beraberliğimizin kaçıncı günü?</h3>
-      <p><strong id="daysTogether">0</strong> gün oldu 🤍</p>
-    </div>
+  <h2>📝 Yapılacaklar Listesi</h2>
+  <input type="text" id="todoInput" placeholder="Yeni madde ekle...">
+  <button onclick="addTodo()">Ekle</button>
+  <ul class="todo-list" id="todoList"></ul>
 
-    <div class="goal-bar-container">
-      <h3>6 Aylık Hedef</h3>
-      <div class="goal-bar">
-        <div class="goal-bar-fill" id="goalBarFill">0%</div>
-      </div>
-    </div>
-  </div>
+  <h2>💖 Kalpli Takvim</h2>
+  <table>
+    <tr>
+      <td>1</td><td>2</td><td>3</td><td>4</td><td class="special">5</td><td>6</td><td>7</td>
+    </tr>
+    <tr>
+      <td>8</td><td>9</td><td class="special">10</td><td>11</td><td>12</td><td>13</td><td class="special">14</td>
+    </tr>
+  </table>
 
-  <script>
-    const correctPassword = "03032025";
-    const loginBox = document.getElementById("login-box");
-    const mainContent = document.getElementById("main-content");
-    const errorMsg = document.getElementById("error");
+  <h2>💌 Rastgele Sevgi Mesajı</h2>
+  <div class="message-box" id="loveMessage">Bugünün sevgi mesajı burada yer alacak 💖</div>
+  <button onclick="generateMessage()">Yeni Mesaj</button>
+</div>
+<script>
+  const correctPassword = "03032025";
+  const loginBox = document.getElementById("login-box");
+  const mainContent = document.getElementById("main-content");
+  const errorMsg = document.getElementById("error");
 
-    function checkPassword() {
-      const input = document.getElementById("password").value.trim();
-      if (input === correctPassword) {
-        loginBox.style.display = "none";
-        mainContent.style.display = "block";
-        calculateDays();
-      } else {
-        errorMsg.style.display = "block";
-      }
+  function checkPassword() {
+    const input = document.getElementById("password").value.trim();
+    if (input === correctPassword) {
+      loginBox.style.display = "none";
+      mainContent.style.display = "block";
+      updateDays();
+      updateProgress();
+      generateMessage();
+    } else {
+      errorMsg.style.display = "block";
     }
+  }
 
-    function calculateDays() {
-      const startDate = new Date("2025-03-03");
-      const today = new Date();
-      const diffTime = today - startDate;
-      const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      document.getElementById("daysTogether").textContent = days;
+  function updateDays() {
+    const start = new Date("2025-03-03");
+    const today = new Date();
+    const diff = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+    document.getElementById("daysTogether").textContent = diff;
+  }
 
-      // 6 ay = yaklaşık 183 gün
-      const percent = Math.min(100, Math.floor((days / 183) * 100));
-      const bar = document.getElementById("goalBarFill");
-      bar.style.width = percent + "%";
-      bar.textContent = percent + "%";
+  function updateProgress() {
+    const start = new Date("2025-03-03");
+    const today = new Date();
+    const diff = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+    const percent = Math.min(100, Math.floor((diff / 183) * 100));
+    const bar = document.getElementById("goalFill");
+    bar.style.width = percent + "%";
+    bar.textContent = percent + "%";
+  }
+
+  const todos = [];
+  function addTodo() {
+    const input = document.getElementById("todoInput");
+    const list = document.getElementById("todoList");
+    if (input.value.trim()) {
+      const li = document.createElement("li");
+      li.textContent = input.value.trim();
+      list.appendChild(li);
+      todos.push(input.value.trim());
+      input.value = "";
     }
+  }
 
-    document.getElementById("password").addEventListener("keypress", function (e) {
-      if (e.key === "Enter") checkPassword();
-    });
-  </script>
+  const messages = [
+    "Seninle her şey çok güzel 💖",
+    "Gözlerin, günümün en parlak anı 🌟",
+    "Birlikte geçen her saniye bir mucize ✨",
+    "Kalbimin tek sahibi sensin 🤍",
+    "Gülüşün dünyamı aydınlatıyor ☀️"
+  ];
 
+  function generateMessage() {
+    const msg = messages[Math.floor(Math.random() * messages.length)];
+    document.getElementById("loveMessage").textContent = msg;
+  }
+
+  document.getElementById("password").addEventListener("keypress", function (e) {
+    if (e.key === "Enter") checkPassword();
+  });
+</script>
 </body>
 </html>

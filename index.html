@@ -1,215 +1,239 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Eylülü Daily 🤍</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #fce4ec, #f8bbd0);
-    min-height: 100vh;
-    padding: 30px;
-  }
-  .container {
-    max-width: 800px;
-    margin: auto;
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  }
-  h1,h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #b23481;
-  }
-  input[type=password], input[type=text], textarea {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: 2px solid #d05cae;
-    margin-bottom: 20px;
-    font-size: 1.1rem;
-    resize: vertical;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 10px;
-    background: linear-gradient(90deg, #b23481, #dd4da3);
-    color: white;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-left: 5px;
-    transition: background 0.3s ease;
-  }
-  button:hover {
-    background: linear-gradient(90deg, #dd4da3, #b23481);
-  }
-  #main-content { display: none; }
-  #error { color: red; text-align: center; margin-bottom: 10px; display:none; }
-  .goal-bar {
-    width: 100%;
-    background: #ffdbe8;
-    border-radius: 20px;
-    overflow: hidden;
-    margin-bottom: 25px;
-  }
-  .goal-bar-fill {
-    height: 22px;
-    background: linear-gradient(90deg, #ff80ab, #f06292);
-    border-radius: 20px 0 0 20px;
-    color: white;
-    text-align: right;
-    padding-right: 12px;
-    line-height: 22px;
-    font-weight: 700;
-    transition: width 1s ease-in-out;
-    width: 0;
-    user-select: none;
-  }
-  ul.todo-list {
-    list-style: none;
-  }
-  ul.todo-list li {
-    background: #ffe4f2;
-    margin: 8px 0;
-    padding: 10px 14px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.05rem;
-  }
-  ul.todo-list li button {
-    background: transparent;
-    border: none;
-    font-size: 1.3rem;
-    cursor: pointer;
-    color: #d05cae;
-    transition: color 0.3s ease;
-  }
-  ul.todo-list li button:hover {
-    color: #b23481;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    user-select: none;
-  }
-  td {
-    width: 14.28%;
-    text-align: center;
-    padding: 12px;
-    border: 1px solid #f0c1d1;
-    border-radius: 10px;
-    cursor: default;
-    position: relative;
-    color: #b23481;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-  }
-  td.special {
-    background: #ffdbe8;
-    cursor: help;
-  }
-  td.special:hover::after {
-    content: attr(data-note);
-    position: absolute;
-    bottom: 110%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #ffebf2;
-    color: #c2185b;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    pointer-events: none;
-    z-index: 10;
-  }
-  .message-box {
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 10px;
-    background: #ffe4f2;
-    font-weight: 700;
-    font-size: 1.1rem;
-    min-height: 50px;
-    user-select: text;
-    color: #b23481;
-  }
-  textarea#sharedNote {
-    min-height: 150px;
-    font-size: 1.1rem;
-    line-height: 1.4;
-    background: #fff0f6;
-    border-color: #d05cae;
-    transition: border-color 0.3s ease;
-    border-radius: 12px;
-  }
-  textarea#sharedNote:focus {
-    outline: none;
-    border-color: #b23481;
-    box-shadow: 0 0 8px #b23481aa;
-    background: #ffe6f2;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eylülü Daily 🤍</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Segoe UI',sans-serif;
+      background:linear-gradient(135deg,#fce4ec,#f8bbd0);
+      min-height:100vh; padding:30px;
+    }
+    .container {
+      max-width:800px; margin:auto;
+      background:white; border-radius:20px;
+      padding:30px; box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    }
+    h1,h2 { text-align:center; margin-bottom:20px; color:#b23481; }
+    input[type=password],
+    input[type=text],
+    textarea {
+      width:100%; padding:12px;
+      border-radius:10px; border:2px solid #d05cae;
+      margin-bottom:20px; font-size:1.1rem;
+      font-family:inherit; resize:vertical;
+    }
+    button {
+      padding:8px 16px; border:none; border-radius:10px;
+      background:linear-gradient(90deg,#b23481,#dd4da3);
+      color:white; font-weight:700; cursor:pointer;
+      transition:background 0.3s ease; margin-left:5px;
+    }
+    button:hover {
+      background:linear-gradient(90deg,#dd4da3,#b23481);
+    }
+    #main-content { display:none; }
+    #error { color:red; text-align:center; margin-bottom:10px; display:none; }
+    .goal-bar {
+      width:100%; background:#ffdbe8;
+      border-radius:20px; overflow:hidden;
+      margin-bottom:25px;
+    }
+    .goal-bar-fill {
+      height:22px; width:0;
+      background:linear-gradient(90deg,#ff80ab,#f06292);
+      border-radius:20px 0 0 20px;
+      color:white; text-align:right;
+      padding-right:12px; line-height:22px;
+      font-weight:700; transition:width 1s ease-in-out;
+      user-select:none;
+    }
+    ul.todo-list { list-style:none; }
+    ul.todo-list li {
+      background:#ffe4f2; margin:8px 0;
+      padding:10px 14px; border-radius:10px;
+      display:flex; justify-content:space-between;
+      align-items:center; font-size:1.05rem;
+    }
+    ul.todo-list li button {
+      background:transparent; border:none;
+      font-size:1.3rem; color:#d05cae; cursor:pointer;
+      transition:color 0.3s ease;
+    }
+    ul.todo-list li button:hover { color:#b23481; }
+    table {
+      width:100%; border-collapse:collapse;
+      margin-top:10px; user-select:none;
+    }
+    td {
+      width:14.28%; text-align:center; padding:12px;
+      border:1px solid #f0c1d1; border-radius:8px;
+      position:relative; color:#b23481; font-weight:600;
+      transition:background-color 0.3s ease;
+    }
+    td.special { background:#ffdbe8; cursor:help; }
+    td.special:hover::after {
+      content:attr(data-note);
+      position:absolute; bottom:110%; left:50%;
+      transform:translateX(-50%);
+      background:#ffebf2; color:#c2185b;
+      padding:6px 12px; border-radius:8px;
+      font-size:0.9rem; white-space:nowrap;
+      box-shadow:0 2px 10px rgba(0,0,0,0.15);
+      pointer-events:none; z-index:10;
+    }
+    .message-box {
+      margin-top:20px; padding:15px;
+      border-radius:10px; background:#ffe4f2;
+      font-weight:700; font-size:1.1rem;
+      min-height:50px; user-select:text; color:#b23481;
+    }
+    textarea#sharedNote {
+      min-height:150px; background:#fff0f6;
+      transition:border-color 0.3s ease;
+    }
+    textarea#sharedNote:focus {
+      outline:none; border-color:#b23481;
+      box-shadow:0 0 8px #b23481aa; background:#ffe6f2;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container" id="login-box" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-  <h1 id="loginTitle">🤍 Eylülü Daily 🤍</h1>
-  <input type="password" id="password" placeholder="Şifre: 03032025" autocomplete="off" aria-label="Şifre giriniz" />
-  <button onclick="checkPassword()" aria-label="Giriş yap">Giriş Yap</button>
-  <div id="error" role="alert" aria-live="assertive">Şifre yanlış!</div>
+<!-- Giriş Ekranı -->
+<div class="container" id="login-box" role="dialog" aria-modal="true">
+  <h1>🤍 Eylülü Daily 🤍</h1>
+  <input type="password" id="password" placeholder="Şifre: 03032025" autocomplete="off" />
+  <button onclick="checkPassword()">Giriş Yap</button>
+  <div id="error" role="alert">Şifre yanlış!</div>
 </div>
 
+<!-- Ana İçerik -->
 <div class="container" id="main-content" aria-live="polite" tabindex="-1">
   <h1>Hoşgeldin Eylül 🌸</h1>
 
   <h2>🗓 <span id="daysTogether">0</span> gündür beraberiz</h2>
 
   <h2>🎯 6 Aylık Hedef</h2>
-  <div class="goal-bar" aria-label="6 aylık hedef ilerleme çubuğu">
-    <div class="goal-bar-fill" id="goalFill" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
+  <div class="goal-bar" aria-label="6 aylık hedef çubuğu">
+    <div class="goal-bar-fill" id="goalFill"
+         role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      0%
+    </div>
   </div>
 
   <h2>📝 Yapılacaklar Listesi</h2>
-  <input type="text" id="todoInput" placeholder="Yeni madde ekle..." aria-label="Yeni yapılacak madde" />
-  <button onclick="addTodo()" aria-label="Yeni madde ekle">Ekle</button>
-  <ul class="todo-list" id="todoList" aria-live="polite" aria-label="Yapılacaklar listesi"></ul>
+  <input type="text" id="todoInput" placeholder="Yeni madde ekle..." />
+  <button onclick="addTodo()">Ekle</button>
+  <ul class="todo-list" id="todoList" aria-live="polite"></ul>
 
   <h2>💖 Kalpli Takvim</h2>
   <table role="grid" aria-label="Özel günler takvimi">
     <tbody>
       <tr>
-        <td role="gridcell" tabindex="0">1</td>
-        <td role="gridcell" tabindex="0">2</td>
-        <td role="gridcell" tabindex="0">3</td>
-        <td class="special" role="gridcell" tabindex="0" data-note="İlk Mesaj 💌">4</td>
-        <td role="gridcell" tabindex="0">5</td>
-        <td role="gridcell" tabindex="0">6</td>
-        <td role="gridcell" tabindex="0">7</td>
+        <td>1</td><td>2</td><td>3</td>
+        <td class="special" data-note="İlk Mesaj 💌">4</td>
+        <td>5</td><td>6</td><td>7</td>
       </tr>
       <tr>
-        <td role="gridcell" tabindex="0">8</td>
-        <td class="special" role="gridcell" tabindex="0" data-note="İlk El Ele 🤝">9</td>
-        <td role="gridcell" tabindex="0">10</td>
-        <td role="gridcell" tabindex="0">11</td>
-        <td role="gridcell" tabindex="0">12</td>
-        <td role="gridcell" tabindex="0">13</td>
-        <td class="special" role="gridcell" tabindex="0" data-note="İlk Fotoğraf 📸">14</td>
+        <td>8</td>
+        <td class="special" data-note="İlk El Ele 🤝">9</td>
+        <td>10</td><td>11</td><td>12</td><td>13</td>
+        <td class="special" data-note="İlk Fotoğraf 📸">14</td>
       </tr>
     </tbody>
   </table>
 
   <h2>💌 Rastgele Sevgi Mesajı</h2>
-  <div class="message-box" id="loveMessage" aria-live="polite" aria-atomic="true">Bugünün sevgi mesajı burada yer alacak 💖</div>
-  <button onclick="generateMessage()" aria-label="Yeni sevgi mesajı oluştur">Yeni
+  <div class="message-box" id="loveMessage">…</div>
+  <button onclick="generateMessage()">Yeni Mesaj</button>
+
+  <h2>📓 Ortak Not Defteri</h2>
+  <textarea id="sharedNote" placeholder="Duygularını buraya yazabilirsin…"></textarea>
+</div>
+
+<script>
+  // Şifre Kontrol
+  const PASSWORD = "03032025";
+  const loginBox = document.getElementById("login-box");
+  const mainContent = document.getElementById("main-content");
+  const errorMsg = document.getElementById("error");
+
+  function checkPassword() {
+    if (document.getElementById("password").value.trim() === PASSWORD) {
+      loginBox.style.display = "none";
+      mainContent.style.display = "block";
+      updateDaysAndProgress();
+      generateMessage();
+      renderTodos();
+      loadNote();
+    } else {
+      errorMsg.style.display = "block";
+    }
+  }
+
+  document.getElementById("password")
+    .addEventListener("keypress", e => { if(e.key==="Enter") checkPassword(); });
+
+  // Gün Sayacı & İlerleme
+  function updateDaysAndProgress() {
+    const start = new Date("2025-03-03");
+    const now = new Date();
+    const diffDays = Math.floor((now - start)/(1000*60*60*24));
+    document.getElementById("daysTogether").textContent = diffDays;
+    const percent = Math.min(100, Math.floor((diffDays/183)*100));
+    const bar = document.getElementById("goalFill");
+    bar.style.width = percent+"%";
+    bar.textContent = percent+"%";
+    bar.setAttribute("aria-valuenow", percent);
+  }
+
+  // Yapılacaklar (localStorage)
+  let todos = JSON.parse(localStorage.getItem("todos"))||[];
+  function saveTodos(){ localStorage.setItem("todos",JSON.stringify(todos)); }
+  function renderTodos(){
+    const list = document.getElementById("todoList");
+    list.innerHTML="";
+    todos.forEach((t,i)=>{
+      const li=document.createElement("li");
+      li.textContent=t;
+      const btn=document.createElement("button");
+      btn.textContent="❌"; btn.onclick=()=>{
+        todos.splice(i,1); saveTodos(); renderTodos();
+      };
+      li.appendChild(btn);
+      list.appendChild(li);
+    });
+  }
+  function addTodo(){
+    const inp=document.getElementById("todoInput");
+    if(inp.value.trim()){ todos.push(inp.value.trim()); saveTodos(); renderTodos(); inp.value=""; }
+  }
+
+  // Rastgele Mesaj
+  const messages=[
+    "Seninle her şey çok güzel 💖",
+    "Gözlerin, günümün en parlak anı 🌟",
+    "Birlikte geçen her saniye bir mucize ✨",
+    "Kalbimin tek sahibi sensin 🤍",
+    "Gülüşün dünyamı aydınlatıyor ☀️"
+  ];
+  function generateMessage(){
+    document.getElementById("loveMessage")
+      .textContent=messages[Math.floor(Math.random()*messages.length)];
+  }
+
+  // Ortak Not Defteri (localStorage)
+  const noteBox=document.getElementById("sharedNote");
+  function loadNote(){
+    noteBox.value=localStorage.getItem("sharedNote")||"";
+    noteBox.addEventListener("input",()=>{
+      localStorage.setItem("sharedNote",noteBox.value);
+    });
+  }
+</script>
+
+</body>
+</html>

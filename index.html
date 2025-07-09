@@ -1,239 +1,175 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Eylülü Daily 🤍</title>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family:'Segoe UI',sans-serif;
-      background:linear-gradient(135deg,#fce4ec,#f8bbd0);
-      min-height:100vh; padding:30px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #ffe4f2;
+      margin: 0;
+      padding: 20px;
     }
     .container {
-      max-width:800px; margin:auto;
-      background:white; border-radius:20px;
-      padding:30px; box-shadow:0 10px 30px rgba(0,0,0,0.1);
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
     }
-    h1,h2 { text-align:center; margin-bottom:20px; color:#b23481; }
-    input[type=password],
-    input[type=text],
-    textarea {
-      width:100%; padding:12px;
-      border-radius:10px; border:2px solid #d05cae;
-      margin-bottom:20px; font-size:1.1rem;
-      font-family:inherit; resize:vertical;
+    h1, h2 {
+      text-align: center;
+      color: #d81b60;
+    }
+    input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      font-size: 1rem;
+      border: 2px solid #f06292;
+      border-radius: 10px;
+      margin-right: 10px;
     }
     button {
-      padding:8px 16px; border:none; border-radius:10px;
-      background:linear-gradient(90deg,#b23481,#dd4da3);
-      color:white; font-weight:700; cursor:pointer;
-      transition:background 0.3s ease; margin-left:5px;
+      background: #f06292;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
     }
-    button:hover {
-      background:linear-gradient(90deg,#dd4da3,#b23481);
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
     }
-    #main-content { display:none; }
-    #error { color:red; text-align:center; margin-bottom:10px; display:none; }
-    .goal-bar {
-      width:100%; background:#ffdbe8;
-      border-radius:20px; overflow:hidden;
-      margin-bottom:25px;
+    li {
+      background: #fce4ec;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .goal-bar-fill {
-      height:22px; width:0;
-      background:linear-gradient(90deg,#ff80ab,#f06292);
-      border-radius:20px 0 0 20px;
-      color:white; text-align:right;
-      padding-right:12px; line-height:22px;
-      font-weight:700; transition:width 1s ease-in-out;
-      user-select:none;
+    .completed {
+      text-decoration: line-through;
+      color: #888;
     }
-    ul.todo-list { list-style:none; }
-    ul.todo-list li {
-      background:#ffe4f2; margin:8px 0;
-      padding:10px 14px; border-radius:10px;
-      display:flex; justify-content:space-between;
-      align-items:center; font-size:1.05rem;
+    label {
+      flex: 1;
+      margin-left: 10px;
     }
-    ul.todo-list li button {
-      background:transparent; border:none;
-      font-size:1.3rem; color:#d05cae; cursor:pointer;
-      transition:color 0.3s ease;
+    .day-box {
+      background: #fff0f5;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
     }
-    ul.todo-list li button:hover { color:#b23481; }
-    table {
-      width:100%; border-collapse:collapse;
-      margin-top:10px; user-select:none;
-    }
-    td {
-      width:14.28%; text-align:center; padding:12px;
-      border:1px solid #f0c1d1; border-radius:8px;
-      position:relative; color:#b23481; font-weight:600;
-      transition:background-color 0.3s ease;
-    }
-    td.special { background:#ffdbe8; cursor:help; }
-    td.special:hover::after {
-      content:attr(data-note);
-      position:absolute; bottom:110%; left:50%;
-      transform:translateX(-50%);
-      background:#ffebf2; color:#c2185b;
-      padding:6px 12px; border-radius:8px;
-      font-size:0.9rem; white-space:nowrap;
-      box-shadow:0 2px 10px rgba(0,0,0,0.15);
-      pointer-events:none; z-index:10;
-    }
-    .message-box {
-      margin-top:20px; padding:15px;
-      border-radius:10px; background:#ffe4f2;
-      font-weight:700; font-size:1.1rem;
-      min-height:50px; user-select:text; color:#b23481;
-    }
-    textarea#sharedNote {
-      min-height:150px; background:#fff0f6;
-      transition:border-color 0.3s ease;
-    }
-    textarea#sharedNote:focus {
-      outline:none; border-color:#b23481;
-      box-shadow:0 0 8px #b23481aa; background:#ffe6f2;
+    .day-box textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: vertical;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Eylülü Daily 🤍</h1>
 
-<!-- Giriş Ekranı -->
-<div class="container" id="login-box" role="dialog" aria-modal="true">
-  <h1>🤍 Eylülü Daily 🤍</h1>
-  <input type="password" id="password" placeholder="Şifre: 03032025" autocomplete="off" />
-  <button onclick="checkPassword()">Giriş Yap</button>
-  <div id="error" role="alert">Şifre yanlış!</div>
-</div>
-
-<!-- Ana İçerik -->
-<div class="container" id="main-content" aria-live="polite" tabindex="-1">
-  <h1>Hoşgeldin Eylül 🌸</h1>
-
-  <h2>🗓 <span id="daysTogether">0</span> gündür beraberiz</h2>
-
-  <h2>🎯 6 Aylık Hedef</h2>
-  <div class="goal-bar" aria-label="6 aylık hedef çubuğu">
-    <div class="goal-bar-fill" id="goalFill"
-         role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-      0%
+    <h2>📝 Yapılacaklar Listesi</h2>
+    <div>
+      <input type="text" id="todoInput" placeholder="Yeni görev ekle...">
+      <button onclick="addTodo()">Ekle</button>
     </div>
+    <ul id="todoList"></ul>
+
+    <h2>📅 Günlük Planlayıcı</h2>
+    <div id="planner"></div>
   </div>
 
-  <h2>📝 Yapılacaklar Listesi</h2>
-  <input type="text" id="todoInput" placeholder="Yeni madde ekle..." />
-  <button onclick="addTodo()">Ekle</button>
-  <ul class="todo-list" id="todoList" aria-live="polite"></ul>
+  <script>
+    const todoListEl = document.getElementById("todoList");
+    let todos = JSON.parse(localStorage.getItem("todos") || "[]");
 
-  <h2>💖 Kalpli Takvim</h2>
-  <table role="grid" aria-label="Özel günler takvimi">
-    <tbody>
-      <tr>
-        <td>1</td><td>2</td><td>3</td>
-        <td class="special" data-note="İlk Mesaj 💌">4</td>
-        <td>5</td><td>6</td><td>7</td>
-      </tr>
-      <tr>
-        <td>8</td>
-        <td class="special" data-note="İlk El Ele 🤝">9</td>
-        <td>10</td><td>11</td><td>12</td><td>13</td>
-        <td class="special" data-note="İlk Fotoğraf 📸">14</td>
-      </tr>
-    </tbody>
-  </table>
+    function renderTodos() {
+      todoListEl.innerHTML = "";
+      todos.forEach((todo, i) => {
+        const li = document.createElement("li");
 
-  <h2>💌 Rastgele Sevgi Mesajı</h2>
-  <div class="message-box" id="loveMessage">…</div>
-  <button onclick="generateMessage()">Yeni Mesaj</button>
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = todo.done;
+        checkbox.onchange = () => {
+          todos[i].done = checkbox.checked;
+          saveTodos();
+          renderTodos();
+        };
 
-  <h2>📓 Ortak Not Defteri</h2>
-  <textarea id="sharedNote" placeholder="Duygularını buraya yazabilirsin…"></textarea>
-</div>
+        const label = document.createElement("label");
+        label.textContent = todo.text;
+        if (todo.done) label.classList.add("completed");
 
-<script>
-  // Şifre Kontrol
-  const PASSWORD = "03032025";
-  const loginBox = document.getElementById("login-box");
-  const mainContent = document.getElementById("main-content");
-  const errorMsg = document.getElementById("error");
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "❌";
+        delBtn.onclick = () => {
+          if (confirm("Emin misin Eylülü? 🥺")) {
+            todos.splice(i, 1);
+            saveTodos();
+            renderTodos();
+          }
+        };
 
-  function checkPassword() {
-    if (document.getElementById("password").value.trim() === PASSWORD) {
-      loginBox.style.display = "none";
-      mainContent.style.display = "block";
-      updateDaysAndProgress();
-      generateMessage();
-      renderTodos();
-      loadNote();
-    } else {
-      errorMsg.style.display = "block";
+        li.appendChild(checkbox);
+        li.appendChild(label);
+        li.appendChild(delBtn);
+        todoListEl.appendChild(li);
+      });
     }
-  }
 
-  document.getElementById("password")
-    .addEventListener("keypress", e => { if(e.key==="Enter") checkPassword(); });
+    function addTodo() {
+      const input = document.getElementById("todoInput");
+      const val = input.value.trim();
+      if (val) {
+        todos.push({ text: val, done: false });
+        saveTodos();
+        renderTodos();
+        input.value = "";
+      }
+    }
 
-  // Gün Sayacı & İlerleme
-  function updateDaysAndProgress() {
-    const start = new Date("2025-03-03");
-    const now = new Date();
-    const diffDays = Math.floor((now - start)/(1000*60*60*24));
-    document.getElementById("daysTogether").textContent = diffDays;
-    const percent = Math.min(100, Math.floor((diffDays/183)*100));
-    const bar = document.getElementById("goalFill");
-    bar.style.width = percent+"%";
-    bar.textContent = percent+"%";
-    bar.setAttribute("aria-valuenow", percent);
-  }
+    function saveTodos() {
+      localStorage.setItem("todos", JSON.stringify(todos));
+    }
 
-  // Yapılacaklar (localStorage)
-  let todos = JSON.parse(localStorage.getItem("todos"))||[];
-  function saveTodos(){ localStorage.setItem("todos",JSON.stringify(todos)); }
-  function renderTodos(){
-    const list = document.getElementById("todoList");
-    list.innerHTML="";
-    todos.forEach((t,i)=>{
-      const li=document.createElement("li");
-      li.textContent=t;
-      const btn=document.createElement("button");
-      btn.textContent="❌"; btn.onclick=()=>{
-        todos.splice(i,1); saveTodos(); renderTodos();
+    // Günlük Planlayıcı
+    const days = ["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"];
+    const plannerEl = document.getElementById("planner");
+
+    days.forEach((day, i) => {
+      const box = document.createElement("div");
+      box.className = "day-box";
+
+      const title = document.createElement("h3");
+      title.textContent = day;
+
+      const textarea = document.createElement("textarea");
+      textarea.placeholder = `${day} için plan...`;
+      textarea.value = localStorage.getItem(`plan_${i}`) || "";
+
+      textarea.oninput = () => {
+        localStorage.setItem(`plan_${i}`, textarea.value);
       };
-      li.appendChild(btn);
-      list.appendChild(li);
+
+      box.appendChild(title);
+      box.appendChild(textarea);
+      plannerEl.appendChild(box);
     });
-  }
-  function addTodo(){
-    const inp=document.getElementById("todoInput");
-    if(inp.value.trim()){ todos.push(inp.value.trim()); saveTodos(); renderTodos(); inp.value=""; }
-  }
 
-  // Rastgele Mesaj
-  const messages=[
-    "Seninle her şey çok güzel 💖",
-    "Gözlerin, günümün en parlak anı 🌟",
-    "Birlikte geçen her saniye bir mucize ✨",
-    "Kalbimin tek sahibi sensin 🤍",
-    "Gülüşün dünyamı aydınlatıyor ☀️"
-  ];
-  function generateMessage(){
-    document.getElementById("loveMessage")
-      .textContent=messages[Math.floor(Math.random()*messages.length)];
-  }
-
-  // Ortak Not Defteri (localStorage)
-  const noteBox=document.getElementById("sharedNote");
-  function loadNote(){
-    noteBox.value=localStorage.getItem("sharedNote")||"";
-    noteBox.addEventListener("input",()=>{
-      localStorage.setItem("sharedNote",noteBox.value);
-    });
-  }
-</script>
-
+    renderTodos();
+  </script>
 </body>
 </html>

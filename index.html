@@ -1,291 +1,229 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Eylülü Daily 🤍</title>
-<style>
-  :root {
-    --baby-blue: #a9d6e5;
-    --soft-pink: #f4c2c2;
-    --dark-blue: #27496d;
-    --light-gray: #f8f9fa;
-    --gray-border: #ced4da;
+  <meta charset="UTF-8" />
+  <title>Eylülü Daily 🤍</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --baby-blue: #b3e5fc;
+      --soft-pink: #f8bbd0;
+      --dark-blue: #37474f;
+      --white: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, var(--baby-blue), var(--soft-pink));
+      color: var(--dark-blue);
+    }
+    .login, .main {
+      max-width: 800px;
+      margin: 50px auto;
+      background: var(--white);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .hidden { display: none; }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      background-color: var(--dark-blue);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #timeTogether {
+      text-align: center;
+      font-size: 18px;
+      margin: 20px 0;
+    }
+
+    /* TO DO */
+    #todoList input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      border-radius: 8px 0 0 8px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    #todoList button {
+      border-radius: 0 8px 8px 0;
+      background-color: var(--baby-blue);
+      color: black;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 15px;
+    }
+
+    li {
+      background: var(--baby-blue);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Planner */
+    .planner {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .planner div {
+      background: var(--soft-pink);
+      border-radius: 8px;
+      padding: 5px;
+    }
+
+    .planner textarea {
+      width: 100%;
+      height: 60px;
+      border: none;
+      border-radius: 6px;
+      padding: 5px;
+      resize: none;
+      font-family: 'Segoe UI';
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- Giriş -->
+<div class="login" id="loginBox">
+  <h2>🔒 Eylülü Daily</h2>
+  <input type="password" id="password" placeholder="Şifre: 03032025">
+  <button onclick="checkPassword()">Giriş</button>
+  <p id="error" style="color:red; display:none;">Şifre yanlış 😢</p>
+</div>
+
+<!-- Ana Sayfa -->
+<div class="main hidden" id="mainContent">
+  <h1>Hoş geldin Eylül 🤍</h1>
+
+  <div id="timeTogether">Beraberliğimiz: hesaplanıyor...</div>
+
+  <h2>📝 Yapılacaklar Listesi</h2>
+  <div id="todoList">
+    <input type="text" id="todoInput" placeholder="Yeni madde...">
+    <button onclick="addTodo()">Ekle</button>
+    <ul id="todos"></ul>
+  </div>
+
+  <h2>📅 Haftalık Planlayıcı</h2>
+  <div class="planner" id="planner">
+    <div><strong>Pzt</strong><textarea id="pzt"></textarea></div>
+    <div><strong>Salı</strong><textarea id="sal"></textarea></div>
+    <div><strong>Çar</strong><textarea id="car"></textarea></div>
+    <div><strong>Per</strong><textarea id="per"></textarea></div>
+    <div><strong>Cuma</strong><textarea id="cum"></textarea></div>
+    <div><strong>Cmt</strong><textarea id="cmt"></textarea></div>
+    <div><strong>Paz</strong><textarea id="paz"></textarea></div>
+  </div>
+</div>
+
+<script>
+  const PASSWORD = "03032025";
+
+  function checkPassword() {
+    const input = document.getElementById("password").value;
+    if (input === PASSWORD) {
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("mainContent").classList.remove("hidden");
+      startTimer();
+      loadTodos();
+      loadPlanner();
+    } else {
+      document.getElementById("error").style.display = "block";
+    }
   }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    background: linear-gradient(to bottom, var(--baby-blue), var(--soft-pink));
-    color: var(--dark-blue);
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+
+  // Gün Sayacı
+  function startTimer() {
+    const startDate = new Date("2025-03-03T00:00:00");
+    setInterval(() => {
+      const now = new Date();
+      const diff = now - startDate;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((diff / (1000 * 60)) % 60);
+      const secs = Math.floor((diff / 1000) % 60);
+      document.getElementById("timeTogether").innerText =
+        `Beraberliğimiz: ${days} gün, ${hours} saat, ${mins} dakika, ${secs} saniye`;
+    }, 1000);
   }
-  .hidden { display: none; }
-  .container {
-    max-width: 900px;
-    margin: 30px auto;
-    background: white;
-    padding: 25px 30px;
-    border-radius: 20px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+
+  // TO DO
+  function addTodo() {
+    const input = document.getElementById("todoInput");
+    const text = input.value.trim();
+    if (!text) return;
+    const ul = document.getElementById("todos");
+    const li = document.createElement("li");
+    li.innerHTML = `<span>${text}</span><button onclick="this.parentElement.remove();saveTodos()">❌</button>`;
+    ul.appendChild(li);
+    input.value = "";
+    saveTodos();
   }
-  h1, h2 {
-    text-align: center;
-    margin-bottom: 15px;
-    font-weight: 700;
+
+  function saveTodos() {
+    const todos = [];
+    document.querySelectorAll("#todos li span").forEach(el => {
+      todos.push(el.innerText);
+    });
+    localStorage.setItem("todos", JSON.stringify(todos));
   }
-  h1 {
-    font-size: 2.4rem;
-    color: var(--dark-blue);
+
+  function loadTodos() {
+    const data = JSON.parse(localStorage.getItem("todos") || "[]");
+    data.forEach(text => {
+      const li = document.createElement("li");
+      li.innerHTML = `<span>${text}</span><button onclick="this.parentElement.remove();saveTodos()">❌</button>`;
+      document.getElementById("todos").appendChild(li);
+    });
   }
-  h2 {
-    font-size: 1.8rem;
-    color: var(--dark-blue);
-    margin-top: 40px;
+
+  // Planner kayıt
+  function savePlanner() {
+    const days = ['pzt','sal','car','per','cum','cmt','paz'];
+    days.forEach(day => {
+      localStorage.setItem(`planner_${day}`, document.getElementById(day).value);
+    });
   }
-  .progress-bar {
-    width: 100%;
-    background: var(--light-gray);
-    border-radius: 20px;
-    overflow: hidden;
-    height: 28px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-    margin: 20px 0 40px;
+
+  function loadPlanner() {
+    const days = ['pzt','sal','car','per','cum','cmt','paz'];
+    days.forEach(day => {
+      const saved = localStorage.getItem(`planner_${day}`);
+      if (saved) document.getElementById(day).value = saved;
+      document.getElementById(day).addEventListener("input", savePlanner);
+    });
   }
-  .progress-bar-inner {
-    height: 100%;
-    background: linear-gradient(90deg, var(--baby-blue), var(--dark-blue));
-    color: white;
-    text-align: right;
-    padding-right: 12px;
-    font-weight: 700;
-    line-height: 28px;
-    border-radius: 20px 0 0 20px;
-    transition: width 0.5s ease-in-out;
-    user-select: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  }
-  .login-box {
-    max-width: 400px;
-    margin: 130px auto;
-    padding: 30px 25px;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    text-align: center;
-    font-weight: 600;
-    color: var(--dark-blue);
-  }
-  .login-box input[type="password"] {
-    width: 100%;
-    padding: 12px 15px;
-    border-radius: 12px;
-    border: 1.5px solid var(--gray-border);
-    font-size: 1rem;
-    margin: 18px 0 12px;
-    transition: border-color 0.3s ease;
-  }
-  .login-box input[type="password"]:focus {
-    border-color: var(--baby-blue);
-    outline: none;
-    box-shadow: 0 0 6px var(--baby-blue);
-  }
-  .login-box button {
-    background: var(--dark-blue);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.3s ease;
-  }
-  .login-box button:hover {
-    background: var(--baby-blue);
-    color: var(--dark-blue);
-  }
-  .error-msg {
-    color: #e63946;
-    margin-top: 8px;
-    font-weight: 700;
-    display: none;
-  }
-  #timeTogether {
-    font-size: 1.25rem;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  #todoInput {
-    width: 75%;
-    padding: 10px 14px;
-    border-radius: 12px 0 0 12px;
-    border: 1.5px solid var(--gray-border);
-    border-right: none;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-  }
-  #todoInput:focus {
-    border-color: var(--baby-blue);
-    outline: none;
-    box-shadow: 0 0 8px var(--baby-blue);
-  }
-  #addTodoBtn {
-    width: 23%;
-    padding: 10px 0;
-    border-radius: 0 12px 12px 0;
-    border: 1.5px solid var(--gray-border);
-    background: var(--dark-blue);
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    font-size: 1rem;
-  }
-  #addTodoBtn:hover {
-    background: var(--baby-blue);
-    color: var(--dark-blue);
-  }
-  ul#todoList {
-    list-style: none;
-    padding: 0;
-    margin-top: 18px;
-    max-height: 300px;
-    overflow-y: auto;
-  }
-  ul#todoList li {
-    background: var(--light-gray);
-    border-radius: 14px;
-    margin-bottom: 14px;
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.07);
-    transition: background 0.3s ease;
-    user-select: none;
-  }
-  ul#todoList li:hover {
-    background: var(--baby-blue);
-    color: var(--dark-blue);
-  }
-  ul#todoList li.completed span {
-    text-decoration: line-through;
-    opacity: 0.6;
-  }
-  ul#todoList li input[type="checkbox"] {
-    width: 22px;
-    height: 22px;
-    cursor: pointer;
-    accent-color: var(--dark-blue);
-    margin-right: 15px;
-    flex-shrink: 0;
-    border-radius: 6px;
-    transition: transform 0.2s ease;
-  }
-  ul#todoList li input[type="checkbox"]:checked {
-    transform: scale(1.1);
-  }
-  ul#todoList li button {
-    background: transparent;
-    border: none;
-    color: #e63946;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: color 0.3s ease;
-    flex-shrink: 0;
-    user-select: none;
-  }
-  ul#todoList li button:hover {
-    color: #b71c1c;
-  }
-  #emojiCalendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 12px;
-    margin-top: 12px;
-    justify-items: center;
-    user-select: none;
-  }
-  .emoji-cell {
-    background: var(--light-gray);
-    border-radius: 14px;
-    width: 44px;
-    height: 44px;
-    font-size: 28px;
-    line-height: 44px;
-    text-align: center;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: background 0.3s ease, transform 0.15s ease;
-  }
-  .emoji-cell:hover {
-    background: var(--baby-blue);
-    transform: scale(1.15);
-  }
-  #planner {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 12px;
-    margin-top: 18px;
-    user-select: none;
-  }
-  .day-plan {
-    background: var(--light-gray);
-    border-radius: 16px;
-    padding: 8px;
-    min-height: 90px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
-    display: flex;
-    flex-direction: column;
-  }
-  .day-plan h3 {
-    margin: 0 0 6px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--dark-blue);
-    user-select: none;
-    text-align: center;
-  }
-  .day-plan textarea {
-    resize: none;
-    border: 1.5px solid var(--gray-border);
-    border-radius: 10px;
-    flex-grow: 1;
-    padding: 6px 8px;
-    font-size: 0.85rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    transition: border-color 0.3s ease;
-  }
-  .day-plan textarea:focus {
-    outline: none;
-    border-color: var(--baby-blue);
-    box-shadow: 0 0 6px var(--baby-blue);
-  }
-  #timeCapsuleInput {
-    width: 100%;
-    height: 75px;
-    border-radius: 14px;
-    border: 1.5px solid var(--gray-border);
-    resize: vertical;
-    padding: 10px 12px;
-    font-size: 1rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin-bottom: 8px;
-    transition: border-color 0.3s ease;
-  }
-  #timeCapsuleInput:focus {
-    outline: none;
-    border-color: var(--baby-blue);
-    box-shadow: 0 0 7px var(--baby-blue);
-  }
-  #capsuleDate {
-    padding: 7px 12px;
-    border-radius: 14px;
-    border: 1.5px solid var(--gray-border);
-    font-size: 1rem;
-    margin-bottom: 12px;
-    width: 220px;
-    transition: border-color 0.3s ease;
-  }
+</script>
+</body>
+</html>

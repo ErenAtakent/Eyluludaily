@@ -4,72 +4,71 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>🤍 Eylülü Daily 🤍</title>
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
 <style>
-  /* Reset & Genel */
-  * {
-    box-sizing: border-box;
-  }
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
   body {
-    margin: 0; padding: 0;
+    margin:0; padding:0;
+    min-height: 100vh;
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #fce4ec, #f8bbd0);
     color: #4a235a;
-    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: 20px;
+    padding: 30px 20px;
   }
-  button, input {
+
+  /* Genel buton stilleri */
+  button {
     font-family: inherit;
   }
+
   /* Giriş ekranı */
   #login-screen {
-    background: #fff;
+    background: white;
     border-radius: 24px;
     max-width: 360px;
     width: 100%;
-    padding: 40px 30px 50px;
+    padding: 40px 50px;
     box-shadow: 0 20px 50px rgba(208,92,174,0.3);
     text-align: center;
-    animation: fadeIn 0.8s ease forwards;
   }
   #login-screen h2 {
     font-weight: 700;
-    font-size: 2rem;
+    font-size: 2.4rem;
     margin-bottom: 12px;
-    color: #b53489;
+    color: #b23481;
   }
   #login-screen p {
     font-size: 1.1rem;
     color: #ac4b91;
-    margin-bottom: 30px;
+    margin-bottom: 28px;
     font-style: italic;
   }
   #password-input {
-    width: 80%;
-    padding: 14px 20px;
+    width: 100%;
+    padding: 16px 20px;
     font-size: 1.2rem;
     border-radius: 40px;
     border: 2px solid #d05cae;
     outline-offset: 3px;
-    transition: 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s;
   }
   #password-input:focus {
     border-color: #ac4b91;
     box-shadow: 0 0 8px #ac4b91aa;
   }
   #login-btn {
-    margin-top: 25px;
-    padding: 14px 40px;
+    margin-top: 30px;
+    width: 100%;
+    padding: 16px 0;
+    font-size: 1.3rem;
+    font-weight: 700;
     border: none;
     border-radius: 40px;
     background: linear-gradient(90deg, #b23481, #dd4da3);
     color: white;
-    font-weight: 700;
-    font-size: 1.2rem;
     cursor: pointer;
     box-shadow: 0 8px 20px #dd4da3aa;
     transition: background 0.3s, box-shadow 0.3s;
@@ -79,21 +78,21 @@
     box-shadow: 0 12px 28px #b23481cc;
   }
   #error-message {
-    margin-top: 18px;
-    color: #d33a5a;
+    margin-top: 20px;
     font-weight: 700;
+    color: #d33a5a;
     display: none;
   }
+
   /* Ana içerik */
   #main-content {
+    display: none;
     background: #fff0f6;
     border-radius: 30px;
     max-width: 760px;
     width: 100%;
     padding: 40px 50px 60px;
     box-shadow: 0 30px 70px rgba(208, 92, 174, 0.4);
-    display: none;
-    animation: fadeIn 1s ease forwards;
   }
   header {
     text-align: center;
@@ -112,6 +111,7 @@
     font-size: 1.4rem;
     color: #75285d;
   }
+
   /* Progress Bar */
   .progress-bar {
     background: #f7d1e7;
@@ -141,6 +141,7 @@
     user-select: none;
     font-size: 1.15rem;
   }
+
   /* Mesaj */
   #love-message {
     font-weight: 800;
@@ -152,6 +153,7 @@
     min-height: 60px;
     user-select:none;
   }
+
   /* Yapılacaklar Listesi */
   #todo-list {
     max-width: 600px;
@@ -195,6 +197,7 @@
     height: 22px;
     cursor: pointer;
   }
+
   /* Kalpli Takvim */
   #calendar {
     max-width: 600px;
@@ -243,6 +246,7 @@
     outline: 4px solid #dd4da3;
     cursor: default;
   }
+
   /* Kalp Yağmuru */
   .heart {
     position: fixed;
@@ -258,6 +262,7 @@
     0% {transform: translateY(-15vh) scale(0.5) rotate(0);}
     100% {transform: translateY(110vh) scale(0.9) rotate(360deg); opacity: 0;}
   }
+
   /* Kalp Yağmuru Butonu */
   #heart-btn {
     display: block;
@@ -277,11 +282,13 @@
     background: linear-gradient(90deg, #dd4da3, #b23481);
     box-shadow: 0 12px 28px #b23481cc;
   }
+
   /* Animasyon */
   @keyframes fadeIn {
     from {opacity: 0; transform: translateY(10px);}
     to {opacity: 1; transform: translateY(0);}
   }
+
   /* Responsive */
   @media (max-width: 600px) {
     #main-content {
@@ -299,10 +306,16 @@
 </head>
 <body>
 
-<div id="login-screen" aria-label="Giriş Ekranı">
+<div id="login-screen" role="main" aria-label="Giriş Ekranı">
   <h2>🤍 Eylülü Daily 🤍</h2>
   <p>Sadece sana özel, Eylül’üm 🌙</p>
-  <input type="password" id="password-input" placeholder="Şifreyi gir" autocomplete="off" aria-label="Şifre" />
+  <input
+    type="password"
+    id="password-input"
+    placeholder="Şifreyi gir"
+    autocomplete="off"
+    aria-label="Şifre"
+  />
   <button id="login-btn" aria-label="Giriş Yap">Giriş Yap</button>
   <p id="error-message" role="alert" aria-live="assertive">Şifre yanlış!</p>
 </div>
@@ -380,6 +393,10 @@
     }
   });
 
+  passwordInput.addEventListener("keypress", e => {
+    if(e.key === "Enter") loginBtn.click();
+  });
+
   // Gün sayacı + progress bar
   function updateProgress() {
     const now = new Date();
@@ -439,4 +456,28 @@
   });
 
   // Takvim oluşturma
-  function createCalendar
+  function createCalendar() {
+    calendarDays.innerHTML = "";
+    const today = new Date();
+    const start = new Date(START_DATE);
+    for(let d = new Date(start); d <= today; d.setDate(d.getDate() + 1)) {
+      const dayDiv = document.createElement("div");
+      dayDiv.classList.add("day");
+      dayDiv.textContent = d.getDate();
+
+      if(d.toDateString() === today.toDateString()) {
+        dayDiv.classList.add("today");
+      } else {
+        dayDiv.classList.add("past");
+      }
+
+      calendarDays.appendChild(dayDiv);
+    }
+  }
+
+  // Kalp yağmuru
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration =

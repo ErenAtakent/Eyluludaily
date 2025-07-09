@@ -6,105 +6,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     :root {
-      --baby-blue: #b3e5fc;
-      --soft-pink: #f8bbd0;
-      --dark-blue: #37474f;
-      --white: #ffffff;
-      --light-gray: #f9f9f9;
+      --baby-blue: #d0f0fd;
+      --soft-pink: #ffe0ec;
+      --main-text: #333;
+      --light: #fff;
     }
-    * { box-sizing: border-box; }
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
+      margin: 0;
       background: linear-gradient(to bottom, var(--baby-blue), var(--soft-pink));
-      color: var(--dark-blue);
+      color: var(--main-text);
     }
-    .hidden { display: none; }
-    .container {
-      max-width: 900px;
-      margin: 50px auto;
-      background: var(--white);
+    .login, .app {
+      max-width: 800px;
+      margin: 60px auto;
+      background: var(--light);
       padding: 30px;
       border-radius: 15px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
-    h1, h2 {
-      text-align: center;
-    }
-    button {
-      padding: 10px 20px;
-      margin-top: 10px;
-      background-color: var(--dark-blue);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    input, textarea {
-      font-family: 'Segoe UI', sans-serif;
-    }
-    .login {
-      max-width: 400px;
-      margin: 120px auto;
-      background: var(--white);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      text-align: center;
-    }
-    .login input[type="password"] {
+    .hidden { display: none; }
+    h1, h2 { text-align: center; }
+    input[type="text"], textarea, input[type="date"] {
       width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 10px;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
       border: 1px solid #ccc;
     }
-    #error {
-      color: red;
-      margin-top: 10px;
-    }
-    #timeTogether {
-      text-align: center;
-      font-size: 18px;
-      margin: 20px 0;
-    }
-    .progress-bar {
-      width: 100%;
-      height: 25px;
-      background-color: var(--light-gray);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 30px;
-    }
-    .progress-bar-inner {
-      height: 100%;
-      background-color: var(--soft-pink);
-      text-align: right;
-      padding-right: 10px;
+    button {
+      background-color: #555;
       color: white;
-      font-weight: bold;
-      border-radius: 12px;
-      line-height: 25px;
-      transition: width 0.4s ease;
-    }
-    .planner {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 30px;
-    }
-    .planner div {
-      background: var(--light-gray);
-      border-radius: 10px;
-      padding: 10px;
-    }
-    .planner textarea {
-      width: 100%;
-      min-height: 60px;
       border: none;
+      padding: 10px 20px;
       border-radius: 8px;
-      padding: 5px;
+      cursor: pointer;
     }
+    ul { padding-left: 20px; }
+    li {
+      list-style: none;
+      margin: 8px 0;
+    }
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .calendar div {
+      background: var(--baby-blue);
+      padding: 10px;
+      border-radius: 8px;
+      min-height: 60px;
+    }
+    .emoji { font-size: 24px; cursor: pointer; margin: 0 5px; }
+    .highlight { font-weight: bold; color: darkred; }
   </style>
 </head>
 <body>
@@ -113,25 +74,20 @@
   <h2>🔒 Eylülü Daily</h2>
   <input type="password" id="password" placeholder="Şifre: 03032025">
   <button onclick="checkPassword()">Giriş Yap</button>
-  <p id="error" class="hidden">Şifre yanlış 😢</p>
+  <p id="error" style="color:red; display:none;">Şifre yanlış 😢</p>
 </div>
 
-<div class="container hidden" id="mainContent">
-  <h1>Hoş geldin Eylül 🤍</h1>
-  <div id="timeTogether">Beraberliğimiz: hesaplanıyor...</div>
-
-  <h2>💖 6 Aylık Hedef Barı</h2>
-  <div class="progress-bar">
-    <div class="progress-bar-inner" id="goalBar">%</div>
-  </div>
+<div class="app hidden" id="mainApp">
+  <h1>Merhaba Eylül 🤍</h1>
+  <div id="counter">Beraberliğimiz: hesaplanıyor...</div>
 
   <h2>📝 Yapılacaklar Listesi</h2>
   <input type="text" id="todoInput" placeholder="Bir şeyler yaz...">
   <button onclick="addTodo()">Ekle</button>
   <ul id="todoList"></ul>
 
-  <h2>📅 Haftalık Planlayıcı</h2>
-  <div class="planner">
+  <h2>📅 Haftalık Takvim</h2>
+  <div class="calendar">
     <div><strong>Pzt</strong><textarea id="pzt"></textarea></div>
     <div><strong>Salı</strong><textarea id="sal"></textarea></div>
     <div><strong>Çarş</strong><textarea id="car"></textarea></div>
@@ -142,29 +98,22 @@
   </div>
 
   <h2>📨 Zaman Kapsülü</h2>
-  <textarea id="capsuleText" placeholder="Geleceğe bir not bırak..."></textarea><br>
+  <textarea id="capsuleText" placeholder="Geleceğe bir not bırak..."></textarea>
   <input type="date" id="capsuleDate">
   <button onclick="saveCapsule()">Kaydet</button>
   <p id="capsuleMessage"></p>
 
   <h2>💌 Bugünün Mesajı</h2>
-  <div id="loveMessage" style="background: var(--light-gray); padding: 15px; border-radius: 10px; text-align:center; font-size: 18px;"></div>
+  <div id="dailyLove" style="text-align:center; padding:10px;"></div>
 
   <h2>😊 Bugün nasılsın?</h2>
-  <div id="emojiMood" style="font-size: 26px; text-align: center;">
-    <span onclick="saveMood('😊')">😊</span>
-    <span onclick="saveMood('😔')">😔</span>
-    <span onclick="saveMood('😡')">😡</span>
-    <span onclick="saveMood('😍')">😍</span>
-    <span onclick="saveMood('😴')">😴</span>
-    <p id="moodDisplay" style="margin-top:10px;"></p>
-  </div>
-
-  <h2>📸 Anılar Köşesi</h2>
-  <div style="display: flex; gap: 10px; overflow-x: auto;">
-    <div style="background: var(--soft-pink); padding: 10px; border-radius: 10px;">İlk mesajın 💬</div>
-    <div style="background: var(--baby-blue); padding: 10px; border-radius: 10px;">İlk görüşümüz 👀</div>
-    <div style="background: var(--soft-pink); padding: 10px; border-radius: 10px;">En tatlı kahkahamız 😄</div>
+  <div style="text-align:center;">
+    <span class="emoji" onclick="saveMood('😊')">😊</span>
+    <span class="emoji" onclick="saveMood('😔')">😔</span>
+    <span class="emoji" onclick="saveMood('😡')">😡</span>
+    <span class="emoji" onclick="saveMood('😍')">😍</span>
+    <span class="emoji" onclick="saveMood('😴')">😴</span>
+    <div id="moodDisplay"></div>
   </div>
 </div>
 
@@ -172,19 +121,18 @@
   const PASSWORD = "03032025";
 
   function checkPassword() {
-    const input = document.getElementById("password").value;
-    if (input === PASSWORD) {
+    const val = document.getElementById("password").value;
+    if (val === PASSWORD) {
       document.getElementById("loginBox").classList.add("hidden");
-      document.getElementById("mainContent").classList.remove("hidden");
-      initPage();
+      document.getElementById("mainApp").classList.remove("hidden");
+      init();
     } else {
-      document.getElementById("error").classList.remove("hidden");
+      document.getElementById("error").style.display = "block";
     }
   }
 
-  function initPage() {
+  function init() {
     startCounter();
-    fillGoalBar();
     loadTodos();
     loadPlanner();
     showLoveMessage();
@@ -193,50 +141,57 @@
   }
 
   function startCounter() {
-    const startDate = new Date("2025-03-03T00:00:00");
+    const start = new Date("2025-03-03");
     setInterval(() => {
       const now = new Date();
-      const diff = now - startDate;
+      const diff = now - start;
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const mins = Math.floor((diff / (1000 * 60)) % 60);
-      const secs = Math.floor((diff / 1000) % 60);
-      document.getElementById("timeTogether").innerText =
-        `Beraberliğimiz: ${days} gün, ${hours} saat, ${mins} dakika, ${secs} saniye`;
+      document.getElementById("counter").innerText = `Beraberliğimiz: ${days} gün`;
     }, 1000);
   }
 
-  function fillGoalBar() {
-    const start = new Date("2025-03-03");
-    const target = new Date("2025-09-03");
-    const now = new Date();
-    const percent = Math.min(100, Math.floor(((now - start) / (target - start)) * 100));
-    document.getElementById("goalBar").style.width = percent + "%";
-    document.getElementById("goalBar").innerText = percent + "%";
+  function addTodo() {
+    const val = document.getElementById("todoInput").value.trim();
+    if (!val) return;
+    const li = document.createElement("li");
+    li.className = "todo-item";
+    li.innerHTML = `
+      <input type="checkbox" onchange="saveTodos()">
+      <span>${val}</span>
+      <button onclick="confirmDelete(this)">❌</button>
+    `;
+    document.getElementById("todoList").appendChild(li);
+    document.getElementById("todoInput").value = "";
+    saveTodos();
   }
 
-  function addTodo() {
-    const input = document.getElementById("todoInput");
-    const text = input.value.trim();
-    if (!text) return;
-    const li = document.createElement("li");
-    li.innerHTML = text + ' <button onclick="this.parentElement.remove();saveTodos()">❌</button>';
-    document.getElementById("todoList").appendChild(li);
-    input.value = "";
-    saveTodos();
+  function confirmDelete(btn) {
+    if (confirm("Emin misin Eylülü?")) {
+      btn.parentElement.remove();
+      saveTodos();
+    }
   }
 
   function saveTodos() {
     const items = [];
-    document.querySelectorAll("#todoList li").forEach(li => items.push(li.innerText.replace(" ❌","")));
+    document.querySelectorAll("#todoList li").forEach(li => {
+      const checked = li.querySelector("input").checked;
+      const text = li.querySelector("span").innerText;
+      items.push({text, checked});
+    });
     localStorage.setItem("todos", JSON.stringify(items));
   }
 
   function loadTodos() {
     const items = JSON.parse(localStorage.getItem("todos") || "[]");
-    items.forEach(text => {
+    items.forEach(item => {
       const li = document.createElement("li");
-      li.innerHTML = text + ' <button onclick="this.parentElement.remove();saveTodos()">❌</button>';
+      li.className = "todo-item";
+      li.innerHTML = `
+        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="saveTodos()">
+        <span>${item.text}</span>
+        <button onclick="confirmDelete(this)">❌</button>
+      `;
       document.getElementById("todoList").appendChild(li);
     });
   }
@@ -244,57 +199,54 @@
   function loadPlanner() {
     ['pzt','sal','car','per','cum','cmt','paz'].forEach(id => {
       const el = document.getElementById(id);
-      el.value = localStorage.getItem("planner_" + id) || "";
+      el.value = localStorage.getItem("plan_" + id) || "";
       el.addEventListener("input", () => {
-        localStorage.setItem("planner_" + id, el.value);
+        localStorage.setItem("plan_" + id, el.value);
       });
     });
   }
 
+  function showLoveMessage() {
+    const msgs = [
+      "Seninle geçen her gün bir mucize 💘",
+      "Eylülle Eren tamamdır 🌈",
+      "Kalbim seninle tam 🫶",
+      "Sonsuza kadar birlikte 💑",
+      "Her şey seninle güzel 🌸"
+    ];
+    const msg = msgs[Math.floor(Math.random() * msgs.length)];
+    document.getElementById("dailyLove").innerText = msg;
+  }
+
   function saveMood(emoji) {
     localStorage.setItem("mood", emoji);
-    document.getElementById("moodDisplay").innerText = `Bugünkü hissin: ${emoji}`;
+    document.getElementById("moodDisplay").innerText = "Bugünkü ruh halin: " + emoji;
   }
 
   function loadMood() {
     const mood = localStorage.getItem("mood");
     if (mood) {
-      document.getElementById("moodDisplay").innerText = `Bugünkü hissin: ${mood}`;
+      document.getElementById("moodDisplay").innerText = "Bugünkü ruh halin: " + mood;
     }
-  }
-
-  function showLoveMessage() {
-    const messages = [
-      "Seninle her gün daha güzel 🤍",
-      "Gülüşün en sevdiğim ritim 🎵",
-      "Sana her baktığımda yeniden aşık oluyorum 💘",
-      "Eylül'süz Eren olmaz 🍂",
-      "Kalbim, seninle tam 🌟"
-    ];
-    const msg = messages[Math.floor(Math.random() * messages.length)];
-    document.getElementById("loveMessage").innerText = msg;
   }
 
   function saveCapsule() {
-    const text = document.getElementById("capsuleText").value;
+    const note = document.getElementById("capsuleText").value;
     const date = document.getElementById("capsuleDate").value;
-    if (text && date) {
-      localStorage.setItem("capsuleNote", text);
-      localStorage.setItem("capsuleDate", date);
-      document.getElementById("capsuleMessage").innerText = "Kapsül kaydedildi 💌";
-    }
+    localStorage.setItem("capsuleNote", note);
+    localStorage.setItem("capsuleDate", date);
+    document.getElementById("capsuleMessage").innerText = "Kapsül kaydedildi 💌";
   }
 
   function loadCapsule() {
-    const text = localStorage.getItem("capsuleNote");
+    const note = localStorage.getItem("capsuleNote");
     const date = localStorage.getItem("capsuleDate");
-    if (text && date) {
-      const today = new Date().toISOString().split("T")[0];
-      if (today >= date) {
-        document.getElementById("capsuleMessage").innerText = "🎁 Zaman kapsülünden mesajın:\n" + text;
-      }
+    const today = new Date().toISOString().split("T")[0];
+    if (date && today >= date) {
+      document.getElementById("capsuleMessage").innerText = "🎁 Mesajın: " + note;
     }
   }
 </script>
+
 </body>
 </html>

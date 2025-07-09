@@ -6,13 +6,14 @@
   <title>Eylülü Daily 🤍</title>
   <style>
     body {
-      margin: 0; font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right top, #ffe0ec, #f8bbd0);
-      color: #6a1b9a; padding: 0; min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(to bottom, #e3eaf2, #dfe3e6);
+      color: #2e3b4e;
     }
     .container {
-      max-width: 800px;
-      margin: 40px auto;
+      max-width: 900px;
+      margin: 30px auto;
       background: white;
       padding: 30px;
       border-radius: 16px;
@@ -20,35 +21,35 @@
     }
     h1, h2 {
       text-align: center;
-      color: #d81b60;
+      color: #3f51b5;
     }
-    .progress-bar {
+    .progress-bar, .love-bar {
       width: 100%;
-      background: #f8bbd0;
+      background: #d0d0d0;
       border-radius: 20px;
       overflow: hidden;
       margin: 20px 0;
     }
-    .progress-bar-inner {
+    .progress-bar-inner, .love-bar-inner {
       height: 25px;
-      width: 70%;
-      background: linear-gradient(to right, #d81b60, #ad1457);
+      background: linear-gradient(to right, #3f51b5, #7986cb);
       color: white;
       text-align: right;
       padding-right: 10px;
       line-height: 25px;
       font-weight: bold;
+      transition: width 0.5s;
     }
     input[type="text"], textarea {
       width: 100%;
       padding: 10px;
       margin-top: 10px;
       border-radius: 10px;
-      border: 1px solid #d81b60;
+      border: 1px solid #ccc;
       font-size: 1rem;
     }
     button {
-      background: #d81b60;
+      background: #3f51b5;
       color: white;
       border: none;
       padding: 10px 20px;
@@ -60,7 +61,7 @@
       list-style: none; padding: 0;
     }
     li {
-      background: #fce4ec;
+      background: #f0f0f0;
       padding: 10px;
       border-radius: 10px;
       margin: 10px 0;
@@ -68,12 +69,17 @@
       align-items: center;
       justify-content: space-between;
     }
-    .completed {
+    li.completed span {
       text-decoration: line-through;
-      color: #999;
+      color: #888;
+    }
+    .emoji-cell {
+      font-size: 24px;
+      padding: 6px;
+      cursor: pointer;
     }
     .day-plan {
-      background: #f3e5f5;
+      background: #f4f7fa;
       padding: 15px;
       border-radius: 12px;
       margin-bottom: 10px;
@@ -90,10 +96,21 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.15);
       text-align: center;
     }
+    .emoji-row {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    audio {
+      width: 100%;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
 
+<!-- Giriş ekranı -->
 <div class="login-box" id="loginBox">
   <h2>🔒 Eylülü Daily</h2>
   <input type="password" id="passwordInput" placeholder="Şifre: 03032025" />
@@ -102,71 +119,139 @@
   <p id="error" style="color:red; display:none;">Şifre yanlış 😢</p>
 </div>
 
+<!-- Ana içerik -->
 <div class="container hidden" id="mainContent">
   <h1>Hoş geldin Eylül 🤍</h1>
-  <h2>Birlikte <span id="days">129</span> gündür!</h2>
+  <h2>⏳ <span id="timeTogether"></span></h2>
 
-  <h2>6 Aylık Hedef: <span id="progressText">70%</span></h2>
+  <h2>6 Aylık Hedef Barı</h2>
   <div class="progress-bar">
-    <div class="progress-bar-inner" style="width:70%;" id="progressBar">70%</div>
+    <div class="progress-bar-inner" id="progressBar"></div>
   </div>
 
+  <h2>❤️ Sevgi Barı</h2>
+  <div class="love-bar">
+    <div class="love-bar-inner" id="loveBar">0%</div>
+  </div>
+  <!-- Yapılacaklar Listesi -->
   <h2>📝 Yapılacaklar</h2>
-  <input type="text" id="todoInput" placeholder="Yeni madde ekle..."/>
+  <input type="text" id="todoInput" placeholder="Yeni görev ekle..."/>
   <button onclick="addTodo()">Ekle</button>
   <ul id="todoList"></ul>
 
+  <!-- Emoji Takvimi -->
+  <h2>😊 Ortak Duygu Emoji Takvimi</h2>
+  <div id="emojiCalendar" class="emoji-row"></div>
+
+  <!-- Haftalık Planlayıcı -->
   <h2>📅 Haftalık Planlayıcı</h2>
   <div id="planner"></div>
-</div>
+
+  <!-- Zaman Kapsülü -->
+  <h2>📦 Zaman Kapsülü</h2>
+  <textarea id="timeCapsuleInput" rows="3" placeholder="Geleceğe mesajını yaz..."></textarea><br/>
+  <label for="capsuleDate">Açılma Tarihi: </label>
+  <input type="date" id="capsuleDate"/><br/>
+  <button onclick="saveTimeCapsule()">Zaman Kapsülünü Kaydet</button>
+  <p id="capsuleMessage" style="margin-top:10px; font-style: italic;"></p>
+
+  <!-- Sesli Not -->
+  <h2>🎙️ Sesli Not</h2>
+  <button id="recordBtn">🎤 Kayda Başla</button>
+  <button id="stopBtn" disabled>■ Kaydı Durdur</button>
+  <audio id="audioPlayback" controls></audio>
+
+</div> <!-- container ve mainContent sonu -->
 
 <script>
+  // Şifre kontrolü
   const PASSWORD = "03032025";
   function checkPassword() {
     const val = document.getElementById("passwordInput").value;
     if (val === PASSWORD) {
       document.getElementById("loginBox").style.display = "none";
       document.getElementById("mainContent").classList.remove("hidden");
-      renderTodos(); renderPlanner();
+      initializeApp();
     } else {
       document.getElementById("error").style.display = "block";
     }
   }
 
-  // Yapılacaklar
+  // Değişkenler
   let todos = JSON.parse(localStorage.getItem("todos") || "[]");
+  let emojis = JSON.parse(localStorage.getItem("emojis") || "{}");
+  let plans = JSON.parse(localStorage.getItem("plans") || "{}");
+  let timeCapsule = JSON.parse(localStorage.getItem("timeCapsule") || "{}");
+
+  // Başlangıç tarihi (3 Mart 2025)
+  const startDate = new Date(2025, 2, 3);
+
+  // Zaman kapsülünün açılıp açılmadığını kontrol et
+  function checkTimeCapsule() {
+    const now = new Date();
+    const openDate = timeCapsule.openDate ? new Date(timeCapsule.openDate) : null;
+    const messageEl = document.getElementById("capsuleMessage");
+    if (openDate && now >= openDate && timeCapsule.message) {
+      messageEl.textContent = "Zaman Kapsülün Açıldı 💌: " + timeCapsule.message;
+    } else {
+      messageEl.textContent = "";
+    }
+  }
+
+  // Zaman kapsülü kaydet
+  function saveTimeCapsule() {
+    const message = document.getElementById("timeCapsuleInput").value.trim();
+    const openDate = document.getElementById("capsuleDate").value;
+    if (!message || !openDate) {
+      alert("Lütfen mesaj ve açılma tarihini doldur.");
+      return;
+    }
+    timeCapsule = { message, openDate };
+    localStorage.setItem("timeCapsule", JSON.stringify(timeCapsule));
+    checkTimeCapsule();
+    alert("Zaman kapsülünüz kaydedildi!");
+  }
+
+  // Yapılacaklar listesi fonksiyonları
   function addTodo() {
     const input = document.getElementById("todoInput");
-    const text = input.value.trim();
-    if (!text) return;
-    todos.push({ text, done: false });
+    const val = input.value.trim();
+    if (!val) return;
+    todos.push({ text: val, done: false });
     input.value = "";
-    saveTodos(); renderTodos();
+    saveTodos();
+    renderTodos();
+    updateLoveBar();
   }
+
   function renderTodos() {
     const list = document.getElementById("todoList");
     list.innerHTML = "";
     todos.forEach((todo, i) => {
       const li = document.createElement("li");
+      li.className = todo.done ? "completed" : "";
 
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.checked = todo.done;
       checkbox.onchange = () => {
         todos[i].done = checkbox.checked;
-        saveTodos(); renderTodos();
+        saveTodos();
+        renderTodos();
+        updateLoveBar();
       };
 
       const label = document.createElement("span");
       label.textContent = todo.text;
-      if (todo.done) label.classList.add("completed");
 
       const del = document.createElement("button");
       del.textContent = "❌";
       del.onclick = () => {
         if (confirm("Emin misin Eylülü? 🥺")) {
           todos.splice(i, 1);
-          saveTodos(); renderTodos();
+          saveTodos();
+          renderTodos();
+          updateLoveBar();
         }
       };
 
@@ -176,15 +261,47 @@
       list.appendChild(li);
     });
   }
+
   function saveTodos() {
     localStorage.setItem("todos", JSON.stringify(todos));
   }
 
-  // Planlayıcı
-  const days = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
+  // Emoji takvimi fonksiyonları
+  const emojiOptions = ["😊","😍","😂","😢","😡","😴","🥰","🤗","😎","🤩"];
+
+  function renderEmojiCalendar() {
+    const container = document.getElementById("emojiCalendar");
+    container.innerHTML = "";
+    // Haftanın günleri: Pazartesi'den Pazar'a
+    const days = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
+    days.forEach((day, i) => {
+      const cell = document.createElement("div");
+      cell.className = "emoji-cell";
+      cell.title = day;
+      cell.textContent = emojis[i] || "➕";
+      cell.onclick = () => {
+        showEmojiPicker(i);
+      };
+      container.appendChild(cell);
+    });
+  }
+
+  function showEmojiPicker(dayIndex) {
+    const choice = prompt("Emoji seç (örnek: 😊, 😍, 😂):", emojis[dayIndex] || "");
+    if (choice && emojiOptions.includes(choice)) {
+      emojis[dayIndex] = choice;
+      localStorage.setItem("emojis", JSON.stringify(emojis));
+      renderEmojiCalendar();
+    } else if (choice !== null) {
+      alert("Lütfen geçerli bir emoji seçin!");
+    }
+  }
+
+  // Planlayıcı fonksiyonları
   function renderPlanner() {
     const container = document.getElementById("planner");
     container.innerHTML = "";
+    const days = ["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"];
     days.forEach((day, i) => {
       const box = document.createElement("div");
       box.className = "day-plan";
@@ -194,9 +311,11 @@
 
       const textarea = document.createElement("textarea");
       textarea.placeholder = `${day} için not...`;
-      textarea.value = localStorage.getItem(`plan_${i}`) || "";
+      textarea.value = plans[i] || "";
       textarea.oninput = () => {
-        localStorage.setItem(`plan_${i}`, textarea.value);
+        plans[i] = textarea.value;
+        localStorage.setItem("plans", JSON.stringify(plans));
+        updateLoveBar();
       };
 
       box.appendChild(title);
@@ -204,7 +323,87 @@
       container.appendChild(box);
     });
   }
-</script>
 
+  // Sevgi Barı hesaplama (örnek basit algoritma)
+  function updateLoveBar() {
+    // Yapılacaklar tamamlanma oranı %50, planlayıcı doluluk oranı %50
+    let todoRatio = todos.length === 0 ? 0 : (todos.filter(t => t.done).length / todos.length);
+    let planFilled = Object.values(plans).filter(v => v.trim() !== "").length;
+    let planRatio = planFilled / 7;
+    let score = Math.round( (todoRatio * 0.5 + planRatio * 0.5) * 100 );
+    if(score > 100) score = 100;
+
+    const loveBar = document.getElementById("loveBar");
+    loveBar.style.width = score + "%";
+    loveBar.textContent = score + "%";
+  }
+
+  // Birlikte geçen süre dinamik hesaplama
+  function updateTimeTogether() {
+    const now = new Date();
+    let diff = now - startDate;
+    if(diff < 0) diff = 0;
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    const el = document.getElementById("timeTogether");
+    el.textContent = `Beraberliğimiz: ${days} gün, ${hours} saat, ${minutes} dakika, ${seconds} saniye`;
+  }
+
+  // Sesli Not Kaydı (basit ve yerel)
+  let mediaRecorder;
+  let audioChunks = [];
+
+  const recordBtn = document.getElementById("recordBtn");
+  const stopBtn = document.getElementById("stopBtn");
+  const audioPlayback = document.getElementById("audioPlayback");
+
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    recordBtn.onclick = async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.start();
+      audioChunks = [];
+
+      mediaRecorder.ondataavailable = e => {
+        audioChunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = e => {
+        const audioBlob = new Blob(audioChunks);
+        const audioUrl = URL.createObjectURL(audioBlob);
+        audioPlayback.src = audioUrl;
+        // Kaydı localStorage'a base64 ile kaydetmek mümkün ama genelde önerilmez (büyük boyut)
+      };
+
+      recordBtn.disabled = true;
+      stopBtn.disabled = false;
+    };
+
+    stopBtn.onclick = () => {
+      mediaRecorder.stop();
+      recordBtn.disabled = false;
+      stopBtn.disabled = true;
+    };
+  } else {
+    recordBtn.disabled = true;
+    stopBtn.disabled = true;
+    recordBtn.textContent = "🎤 Desteklenmiyor";
+  }
+
+  // Ana uygulama başlat
+  function initializeApp() {
+    renderTodos();
+    renderEmojiCalendar();
+    renderPlanner();
+    checkTimeCapsule();
+    updateLoveBar();
+    updateTimeTogether();
+    setInterval(updateTimeTogether, 1000);
+  }
+</script>
 </body>
 </html>

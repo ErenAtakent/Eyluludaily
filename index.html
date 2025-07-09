@@ -1,422 +1,291 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Eylülü Daily 🤍</title>
-  <style>
-    /* Tema renkleri */
-    :root {
-      --baby-blue: #a9d6e5;
-      --soft-pink: #f4c2c2;
-      --dark-blue: #27496d;
-      --light-gray: #f8f9fa;
-      --gray-border: #ced4da;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      background: linear-gradient(to bottom, var(--baby-blue), var(--soft-pink));
-      color: var(--dark-blue);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 30px auto;
-      background: white;
-      padding: 25px 30px;
-      border-radius: 20px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-    }
-
-    h1, h2 {
-      text-align: center;
-      margin-bottom: 15px;
-      font-weight: 700;
-    }
-
-    h1 {
-      font-size: 2.4rem;
-      color: var(--dark-blue);
-    }
-
-    h2 {
-      font-size: 1.8rem;
-      color: var(--dark-blue);
-      margin-top: 40px;
-    }
-
-    /* Progress bar (6 aylık hedef) */
-    .progress-bar {
-      width: 100%;
-      background: var(--light-gray);
-      border-radius: 20px;
-      overflow: hidden;
-      height: 28px;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-      margin: 20px 0 40px;
-    }
-
-    .progress-bar-inner {
-      height: 100%;
-      background: linear-gradient(90deg, var(--baby-blue), var(--dark-blue));
-      color: white;
-      text-align: right;
-      padding-right: 12px;
-      font-weight: 700;
-      line-height: 28px;
-      border-radius: 20px 0 0 20px;
-      transition: width 0.5s ease-in-out;
-      user-select: none;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-
-    /* Giriş ekranı */
-    .login-box {
-      max-width: 400px;
-      margin: 130px auto;
-      padding: 30px 25px;
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      text-align: center;
-      font-weight: 600;
-      color: var(--dark-blue);
-    }
-
-    .login-box input[type="password"] {
-      width: 100%;
-      padding: 12px 15px;
-      border-radius: 12px;
-      border: 1.5px solid var(--gray-border);
-      font-size: 1rem;
-      margin: 18px 0 12px;
-      transition: border-color 0.3s ease;
-    }
-    .login-box input[type="password"]:focus {
-      border-color: var(--baby-blue);
-      outline: none;
-      box-shadow: 0 0 6px var(--baby-blue);
-    }
-
-    .login-box button {
-      background: var(--dark-blue);
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s ease;
-    }
-    .login-box button:hover {
-      background: var(--baby-blue);
-      color: var(--dark-blue);
-    }
-
-    .error-msg {
-      color: #e63946;
-      margin-top: 8px;
-      font-weight: 700;
-      display: none;
-    }
-
-    /* Zaman sayaç */
-    #timeTogether {
-      font-size: 1.25rem;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    /* Yapılacaklar */
-    #todoInput {
-      width: 75%;
-      padding: 10px 14px;
-      border-radius: 12px 0 0 12px;
-      border: 1.5px solid var(--gray-border);
-      border-right: none;
-      font-size: 1rem;
-      transition: border-color 0.3s ease;
-    }
-    #todoInput:focus {
-      border-color: var(--baby-blue);
-      outline: none;
-      box-shadow: 0 0 8px var(--baby-blue);
-    }
-    #addTodoBtn {
-      width: 23%;
-      padding: 10px 0;
-      border-radius: 0 12px 12px 0;
-      border: 1.5px solid var(--gray-border);
-      background: var(--dark-blue);
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      font-size: 1rem;
-    }
-    #addTodoBtn:hover {
-      background: var(--baby-blue);
-      color: var(--dark-blue);
-    }
-
-    ul#todoList {
-      list-style: none;
-      padding: 0;
-      margin-top: 18px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-    ul#todoList li {
-      background: var(--light-gray);
-      border-radius: 14px;
-      margin-bottom: 14px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.07);
-      transition: background 0.3s ease;
-      user-select: none;
-    }
-    ul#todoList li:hover {
-      background: var(--baby-blue);
-      color: var(--dark-blue);
-    }
-    ul#todoList li.completed span {
-      text-decoration: line-through;
-      opacity: 0.6;
-    }
-
-    /* Checkbox */
-    ul#todoList li input[type="checkbox"] {
-      width: 22px;
-      height: 22px;
-      cursor: pointer;
-      accent-color: var(--dark-blue);
-      margin-right: 15px;
-      flex-shrink: 0;
-      border-radius: 6px;
-      transition: transform 0.2s ease;
-    }
-    ul#todoList li input[type="checkbox"]:checked {
-      transform: scale(1.1);
-    }
-
-    ul#todoList li button {
-      background: transparent;
-      border: none;
-      color: #e63946;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: color 0.3s ease;
-      flex-shrink: 0;
-      user-select: none;
-    }
-    ul#todoList li button:hover {
-      color: #b71c1c;
-    }
-
-    /* Emoji takvim */
-    #emojiCalendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 12px;
-      margin-top: 12px;
-      justify-items: center;
-      user-select: none;
-    }
-    .emoji-cell {
-      background: var(--light-gray);
-      border-radius: 14px;
-      width: 44px;
-      height: 44px;
-      font-size: 28px;
-      line-height: 44px;
-      text-align: center;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      transition: background 0.3s ease, transform 0.15s ease;
-    }
-    .emoji-cell:hover {
-      background: var(--baby-blue);
-      transform: scale(1.15);
-    }
-
-    /* Planlayıcı takvim görünümü */
-    #planner {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 12px;
-      margin-top: 18px;
-      user-select: none;
-    }
-    .day-plan {
-      background: var(--light-gray);
-      border-radius: 16px;
-      padding: 8px;
-      min-height: 70px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
-      display: flex;
-      flex-direction: column;
-    }
-    .day-plan h3 {
-      margin: 0 0 6px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--dark-blue);
-      user-select: none;
-      text-align: center;
-    }
-    .day-plan textarea {
-      resize: none;
-      border: 1.5px solid var(--gray-border);
-      border-radius: 10px;
-      flex-grow: 1;
-      padding: 6px 8px;
-      font-size: 0.85rem;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      transition: border-color 0.3s ease;
-    }
-    .day-plan textarea:focus {
-      outline: none;
-      border-color: var(--baby-blue);
-      box-shadow: 0 0 6px var(--baby-blue);
-    }
-
-    /* Zaman kapsülü */
-    #timeCapsuleInput {
-      width: 100%;
-      height: 75px;
-      border-radius: 14px;
-      border: 1.5px solid var(--gray-border);
-      resize: vertical;
-      padding: 10px 12px;
-      font-size: 1rem;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin-bottom: 8px;
-      transition: border-color 0.3s ease;
-    }
-    #timeCapsuleInput:focus {
-      outline: none;
-      border-color: var(--baby-blue);
-      box-shadow: 0 0 7px var(--baby-blue);
-    }
-    #capsuleDate {
-      padding: 7px 12px;
-      border-radius: 14px;
-      border: 1.5px solid var(--gray-border);
-      font-size: 1rem;
-      margin-bottom: 12px;
-      width: 220px;
-      transition: border-color 0.3s ease;
-    }
-    #capsuleDate:focus {
-      outline: none;
-      border-color: var(--baby-blue);
-      box-shadow: 0 0 7px var(--baby-blue);
-    }
-    #saveCapsuleBtn {
-      background: var(--dark-blue);
-      color: white;
-      border: none;
-      padding: 12px 26px;
-      border-radius: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      user-select: none;
-    }
-    #saveCapsuleBtn:hover {
-      background: var(--baby-blue);
-      color: var(--dark-blue);
-    }
-    #capsuleMessage {
-      margin-top: 14px;
-      font-style: italic;
-      text-align: center;
-      color: #444;
-      min-height: 24px;
-      user-select: text;
-    }
-
-    /* Scrollbar stil */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 8px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--baby-blue);
-      border-radius: 8px;
-      transition: background 0.3s ease;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--dark-blue);
-    }
-  </style>
-</head>
-<body>
-
-<!-- Giriş ekranı -->
-<div class="login-box" id="loginBox">
-  <h2>🔒 Eylülü Daily</h2>
-  <input type="password" id="passwordInput" placeholder="Şifre: 03032025" autocomplete="off" />
-  <br />
-  <button onclick="checkPassword()">Giriş Yap</button>
-  <p class="error-msg" id="error">Şifre yanlış 😢</p>
-</div>
-
-<!-- Ana içerik -->
-<div class="container hidden" id="mainContent">
-  <h1>Hoş geldin Eylül 🤍</h1>
-  <div id="timeTogether">Beraberliğimiz: 0 gün, 0 saat, 0 dakika, 0 saniye</div>
-
-  <h2>6 Aylık Hedef Barı</h2>
-  <div class="progress-bar">
-    <div class="progress-bar-inner" id="progressBar">0%</div>
-  </div>
-
-  <h2>📝 Yapılacaklar</h2>
-  <div style="display:flex; justify-content:center; margin-bottom: 0;">
-    <input type="text" id="todoInput" placeholder="Yeni görev ekle..." />
-    <button id="addTodoBtn" onclick="addTodo()">Ekle</button>
-  </div>
-  <ul id="todoList"></ul>
-
-  <h2>😊 Ortak Duygu Emoji Takvimi</h2>
-  <div id="emojiCalendar"></div>
-
-  <h2>📅 Haftalık Planlayıcı</h2>
-  <div id="planner"></div>
-
-  <h2>📦 Zaman Kapsülü</h2>
-  <textarea id="timeCapsuleInput" placeholder="Geleceğe mesajını yaz..."></textarea><br />
-  <label for="capsuleDate">Açılma Tarihi: </label>
-  <input type="date" id="capsuleDate" /><br />
-  <button id="saveCapsuleBtn" onclick="saveTimeCapsule()">Zaman Kapsülünü Kaydet</button>
-  <p id="capsuleMessage"></p>
-</div>
-
-<script>
-  const PASSWORD = "03032025";
-
-  // Şifre kontrolü
-  function checkPassword() {
-    const val = document.getElementById("passwordInput").value;
-    if (val === PASSWORD) {
-      document.getElementById("loginBox").style.display = "none";
-      document.getElementById("mainContent").classList.remove("hidden");
-      initializeApp();
-    } else {
-      document.getElementById("error").style.display =
-</body>
-</html>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Eylülü Daily 🤍</title>
+<style>
+  :root {
+    --baby-blue: #a9d6e5;
+    --soft-pink: #f4c2c2;
+    --dark-blue: #27496d;
+    --light-gray: #f8f9fa;
+    --gray-border: #ced4da;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: linear-gradient(to bottom, var(--baby-blue), var(--soft-pink));
+    color: var(--dark-blue);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .hidden { display: none; }
+  .container {
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  }
+  h1, h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 700;
+  }
+  h1 {
+    font-size: 2.4rem;
+    color: var(--dark-blue);
+  }
+  h2 {
+    font-size: 1.8rem;
+    color: var(--dark-blue);
+    margin-top: 40px;
+  }
+  .progress-bar {
+    width: 100%;
+    background: var(--light-gray);
+    border-radius: 20px;
+    overflow: hidden;
+    height: 28px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    margin: 20px 0 40px;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--baby-blue), var(--dark-blue));
+    color: white;
+    text-align: right;
+    padding-right: 12px;
+    font-weight: 700;
+    line-height: 28px;
+    border-radius: 20px 0 0 20px;
+    transition: width 0.5s ease-in-out;
+    user-select: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .login-box {
+    max-width: 400px;
+    margin: 130px auto;
+    padding: 30px 25px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    text-align: center;
+    font-weight: 600;
+    color: var(--dark-blue);
+  }
+  .login-box input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 12px;
+    border: 1.5px solid var(--gray-border);
+    font-size: 1rem;
+    margin: 18px 0 12px;
+    transition: border-color 0.3s ease;
+  }
+  .login-box input[type="password"]:focus {
+    border-color: var(--baby-blue);
+    outline: none;
+    box-shadow: 0 0 6px var(--baby-blue);
+  }
+  .login-box button {
+    background: var(--dark-blue);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+  }
+  .login-box button:hover {
+    background: var(--baby-blue);
+    color: var(--dark-blue);
+  }
+  .error-msg {
+    color: #e63946;
+    margin-top: 8px;
+    font-weight: 700;
+    display: none;
+  }
+  #timeTogether {
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  #todoInput {
+    width: 75%;
+    padding: 10px 14px;
+    border-radius: 12px 0 0 12px;
+    border: 1.5px solid var(--gray-border);
+    border-right: none;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  #todoInput:focus {
+    border-color: var(--baby-blue);
+    outline: none;
+    box-shadow: 0 0 8px var(--baby-blue);
+  }
+  #addTodoBtn {
+    width: 23%;
+    padding: 10px 0;
+    border-radius: 0 12px 12px 0;
+    border: 1.5px solid var(--gray-border);
+    background: var(--dark-blue);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 1rem;
+  }
+  #addTodoBtn:hover {
+    background: var(--baby-blue);
+    color: var(--dark-blue);
+  }
+  ul#todoList {
+    list-style: none;
+    padding: 0;
+    margin-top: 18px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  ul#todoList li {
+    background: var(--light-gray);
+    border-radius: 14px;
+    margin-bottom: 14px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.07);
+    transition: background 0.3s ease;
+    user-select: none;
+  }
+  ul#todoList li:hover {
+    background: var(--baby-blue);
+    color: var(--dark-blue);
+  }
+  ul#todoList li.completed span {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+  ul#todoList li input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    accent-color: var(--dark-blue);
+    margin-right: 15px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    transition: transform 0.2s ease;
+  }
+  ul#todoList li input[type="checkbox"]:checked {
+    transform: scale(1.1);
+  }
+  ul#todoList li button {
+    background: transparent;
+    border: none;
+    color: #e63946;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  ul#todoList li button:hover {
+    color: #b71c1c;
+  }
+  #emojiCalendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+    justify-items: center;
+    user-select: none;
+  }
+  .emoji-cell {
+    background: var(--light-gray);
+    border-radius: 14px;
+    width: 44px;
+    height: 44px;
+    font-size: 28px;
+    line-height: 44px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: background 0.3s ease, transform 0.15s ease;
+  }
+  .emoji-cell:hover {
+    background: var(--baby-blue);
+    transform: scale(1.15);
+  }
+  #planner {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    margin-top: 18px;
+    user-select: none;
+  }
+  .day-plan {
+    background: var(--light-gray);
+    border-radius: 16px;
+    padding: 8px;
+    min-height: 90px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+  }
+  .day-plan h3 {
+    margin: 0 0 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--dark-blue);
+    user-select: none;
+    text-align: center;
+  }
+  .day-plan textarea {
+    resize: none;
+    border: 1.5px solid var(--gray-border);
+    border-radius: 10px;
+    flex-grow: 1;
+    padding: 6px 8px;
+    font-size: 0.85rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: border-color 0.3s ease;
+  }
+  .day-plan textarea:focus {
+    outline: none;
+    border-color: var(--baby-blue);
+    box-shadow: 0 0 6px var(--baby-blue);
+  }
+  #timeCapsuleInput {
+    width: 100%;
+    height: 75px;
+    border-radius: 14px;
+    border: 1.5px solid var(--gray-border);
+    resize: vertical;
+    padding: 10px 12px;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-bottom: 8px;
+    transition: border-color 0.3s ease;
+  }
+  #timeCapsuleInput:focus {
+    outline: none;
+    border-color: var(--baby-blue);
+    box-shadow: 0 0 7px var(--baby-blue);
+  }
+  #capsuleDate {
+    padding: 7px 12px;
+    border-radius: 14px;
+    border: 1.5px solid var(--gray-border);
+    font-size: 1rem;
+    margin-bottom: 12px;
+    width: 220px;
+    transition: border-color 0.3s ease;
+  }

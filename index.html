@@ -1,175 +1,210 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Eylülü Daily 🤍</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #ffe4f2;
-      margin: 0;
-      padding: 20px;
+      margin: 0; font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right top, #ffe0ec, #f8bbd0);
+      color: #6a1b9a; padding: 0; min-height: 100vh;
     }
     .container {
       max-width: 800px;
-      margin: auto;
+      margin: 40px auto;
       background: white;
       padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
     }
     h1, h2 {
       text-align: center;
       color: #d81b60;
     }
-    input[type="text"] {
+    .progress-bar {
+      width: 100%;
+      background: #f8bbd0;
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .progress-bar-inner {
+      height: 25px;
       width: 70%;
+      background: linear-gradient(to right, #d81b60, #ad1457);
+      color: white;
+      text-align: right;
+      padding-right: 10px;
+      line-height: 25px;
+      font-weight: bold;
+    }
+    input[type="text"], textarea {
+      width: 100%;
       padding: 10px;
-      font-size: 1rem;
-      border: 2px solid #f06292;
+      margin-top: 10px;
       border-radius: 10px;
-      margin-right: 10px;
+      border: 1px solid #d81b60;
+      font-size: 1rem;
     }
     button {
-      background: #f06292;
+      background: #d81b60;
       color: white;
       border: none;
-      padding: 10px 15px;
-      font-weight: bold;
+      padding: 10px 20px;
+      margin-top: 10px;
       border-radius: 10px;
       cursor: pointer;
     }
     ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 20px;
+      list-style: none; padding: 0;
     }
     li {
       background: #fce4ec;
-      margin-bottom: 10px;
       padding: 10px;
       border-radius: 10px;
+      margin: 10px 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
     .completed {
       text-decoration: line-through;
-      color: #888;
+      color: #999;
     }
-    label {
-      flex: 1;
-      margin-left: 10px;
-    }
-    .day-box {
-      background: #fff0f5;
-      padding: 10px;
-      border-radius: 10px;
+    .day-plan {
+      background: #f3e5f5;
+      padding: 15px;
+      border-radius: 12px;
       margin-bottom: 10px;
     }
-    .day-box textarea {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      resize: vertical;
+    .hidden {
+      display: none;
+    }
+    .login-box {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Eylülü Daily 🤍</h1>
 
-    <h2>📝 Yapılacaklar Listesi</h2>
-    <div>
-      <input type="text" id="todoInput" placeholder="Yeni görev ekle...">
-      <button onclick="addTodo()">Ekle</button>
-    </div>
-    <ul id="todoList"></ul>
+<div class="login-box" id="loginBox">
+  <h2>🔒 Eylülü Daily</h2>
+  <input type="password" id="passwordInput" placeholder="Şifre: 03032025" />
+  <br/>
+  <button onclick="checkPassword()">Giriş Yap</button>
+  <p id="error" style="color:red; display:none;">Şifre yanlış 😢</p>
+</div>
 
-    <h2>📅 Günlük Planlayıcı</h2>
-    <div id="planner"></div>
+<div class="container hidden" id="mainContent">
+  <h1>Hoş geldin Eylül 🤍</h1>
+  <h2>Birlikte <span id="days">129</span> gündür!</h2>
+
+  <h2>6 Aylık Hedef: <span id="progressText">70%</span></h2>
+  <div class="progress-bar">
+    <div class="progress-bar-inner" style="width:70%;" id="progressBar">70%</div>
   </div>
 
-  <script>
-    const todoListEl = document.getElementById("todoList");
-    let todos = JSON.parse(localStorage.getItem("todos") || "[]");
+  <h2>📝 Yapılacaklar</h2>
+  <input type="text" id="todoInput" placeholder="Yeni madde ekle..."/>
+  <button onclick="addTodo()">Ekle</button>
+  <ul id="todoList"></ul>
 
-    function renderTodos() {
-      todoListEl.innerHTML = "";
-      todos.forEach((todo, i) => {
-        const li = document.createElement("li");
+  <h2>📅 Haftalık Planlayıcı</h2>
+  <div id="planner"></div>
+</div>
 
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = todo.done;
-        checkbox.onchange = () => {
-          todos[i].done = checkbox.checked;
-          saveTodos();
-          renderTodos();
-        };
-
-        const label = document.createElement("label");
-        label.textContent = todo.text;
-        if (todo.done) label.classList.add("completed");
-
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "❌";
-        delBtn.onclick = () => {
-          if (confirm("Emin misin Eylülü? 🥺")) {
-            todos.splice(i, 1);
-            saveTodos();
-            renderTodos();
-          }
-        };
-
-        li.appendChild(checkbox);
-        li.appendChild(label);
-        li.appendChild(delBtn);
-        todoListEl.appendChild(li);
-      });
+<script>
+  const PASSWORD = "03032025";
+  function checkPassword() {
+    const val = document.getElementById("passwordInput").value;
+    if (val === PASSWORD) {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("mainContent").classList.remove("hidden");
+      renderTodos(); renderPlanner();
+    } else {
+      document.getElementById("error").style.display = "block";
     }
+  }
 
-    function addTodo() {
-      const input = document.getElementById("todoInput");
-      const val = input.value.trim();
-      if (val) {
-        todos.push({ text: val, done: false });
-        saveTodos();
-        renderTodos();
-        input.value = "";
-      }
-    }
+  // Yapılacaklar
+  let todos = JSON.parse(localStorage.getItem("todos") || "[]");
+  function addTodo() {
+    const input = document.getElementById("todoInput");
+    const text = input.value.trim();
+    if (!text) return;
+    todos.push({ text, done: false });
+    input.value = "";
+    saveTodos(); renderTodos();
+  }
+  function renderTodos() {
+    const list = document.getElementById("todoList");
+    list.innerHTML = "";
+    todos.forEach((todo, i) => {
+      const li = document.createElement("li");
 
-    function saveTodos() {
-      localStorage.setItem("todos", JSON.stringify(todos));
-    }
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = todo.done;
+      checkbox.onchange = () => {
+        todos[i].done = checkbox.checked;
+        saveTodos(); renderTodos();
+      };
 
-    // Günlük Planlayıcı
-    const days = ["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"];
-    const plannerEl = document.getElementById("planner");
+      const label = document.createElement("span");
+      label.textContent = todo.text;
+      if (todo.done) label.classList.add("completed");
 
+      const del = document.createElement("button");
+      del.textContent = "❌";
+      del.onclick = () => {
+        if (confirm("Emin misin Eylülü? 🥺")) {
+          todos.splice(i, 1);
+          saveTodos(); renderTodos();
+        }
+      };
+
+      li.appendChild(checkbox);
+      li.appendChild(label);
+      li.appendChild(del);
+      list.appendChild(li);
+    });
+  }
+  function saveTodos() {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }
+
+  // Planlayıcı
+  const days = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
+  function renderPlanner() {
+    const container = document.getElementById("planner");
+    container.innerHTML = "";
     days.forEach((day, i) => {
       const box = document.createElement("div");
-      box.className = "day-box";
+      box.className = "day-plan";
 
       const title = document.createElement("h3");
       title.textContent = day;
 
       const textarea = document.createElement("textarea");
-      textarea.placeholder = `${day} için plan...`;
+      textarea.placeholder = `${day} için not...`;
       textarea.value = localStorage.getItem(`plan_${i}`) || "";
-
       textarea.oninput = () => {
         localStorage.setItem(`plan_${i}`, textarea.value);
       };
 
       box.appendChild(title);
       box.appendChild(textarea);
-      plannerEl.appendChild(box);
+      container.appendChild(box);
     });
+  }
+</script>
 
-    renderTodos();
-  </script>
 </body>
 </html>

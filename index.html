@@ -1,483 +1,144 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>🤍 Eylülü Daily 🤍</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
-  body {
-    margin:0; padding:0;
-    min-height: 100vh;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #fce4ec, #f8bbd0);
-    color: #4a235a;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 30px 20px;
-  }
-
-  /* Genel buton stilleri */
-  button {
-    font-family: inherit;
-  }
-
-  /* Giriş ekranı */
-  #login-screen {
-    background: white;
-    border-radius: 24px;
-    max-width: 360px;
-    width: 100%;
-    padding: 40px 50px;
-    box-shadow: 0 20px 50px rgba(208,92,174,0.3);
-    text-align: center;
-  }
-  #login-screen h2 {
-    font-weight: 700;
-    font-size: 2.4rem;
-    margin-bottom: 12px;
-    color: #b23481;
-  }
-  #login-screen p {
-    font-size: 1.1rem;
-    color: #ac4b91;
-    margin-bottom: 28px;
-    font-style: italic;
-  }
-  #password-input {
-    width: 100%;
-    padding: 16px 20px;
-    font-size: 1.2rem;
-    border-radius: 40px;
-    border: 2px solid #d05cae;
-    outline-offset: 3px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
-  #password-input:focus {
-    border-color: #ac4b91;
-    box-shadow: 0 0 8px #ac4b91aa;
-  }
-  #login-btn {
-    margin-top: 30px;
-    width: 100%;
-    padding: 16px 0;
-    font-size: 1.3rem;
-    font-weight: 700;
-    border: none;
-    border-radius: 40px;
-    background: linear-gradient(90deg, #b23481, #dd4da3);
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 8px 20px #dd4da3aa;
-    transition: background 0.3s, box-shadow 0.3s;
-  }
-  #login-btn:hover {
-    background: linear-gradient(90deg, #dd4da3, #b23481);
-    box-shadow: 0 12px 28px #b23481cc;
-  }
-  #error-message {
-    margin-top: 20px;
-    font-weight: 700;
-    color: #d33a5a;
-    display: none;
-  }
-
-  /* Ana içerik */
-  #main-content {
-    display: none;
-    background: #fff0f6;
-    border-radius: 30px;
-    max-width: 760px;
-    width: 100%;
-    padding: 40px 50px 60px;
-    box-shadow: 0 30px 70px rgba(208, 92, 174, 0.4);
-  }
-  header {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  header h1 {
-    font-weight: 800;
-    font-size: 3rem;
-    margin-bottom: 6px;
-    color: #9f397e;
-    letter-spacing: 3px;
-    text-shadow: 0 0 12px #b23481aa;
-  }
-  header p {
-    font-weight: 600;
-    font-size: 1.4rem;
-    color: #75285d;
-  }
-
-  /* Progress Bar */
-  .progress-bar {
-    background: #f7d1e7;
-    border-radius: 40px;
-    height: 32px;
-    overflow: hidden;
-    position: relative;
-    margin: 25px auto 40px;
-    max-width: 600px;
-  }
-  .progress-bar .fill {
-    background: linear-gradient(90deg, #b23481, #dd4da3);
-    height: 100%;
-    width: 0;
-    border-radius: 40px 0 0 40px;
-    position: relative;
-    transition: width 0.8s ease;
-  }
-  .progress-bar .fill span {
-    position: absolute;
-    right: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-weight: 700;
-    color: white;
-    text-shadow: 0 0 6px rgba(0,0,0,0.3);
-    user-select: none;
-    font-size: 1.15rem;
-  }
-
-  /* Mesaj */
-  #love-message {
-    font-weight: 800;
-    font-size: 1.5rem;
-    text-align: center;
-    margin-bottom: 48px;
-    color: #a42f6f;
-    padding: 0 10px;
-    min-height: 60px;
-    user-select:none;
-  }
-
-  /* Yapılacaklar Listesi */
-  #todo-list {
-    max-width: 600px;
-    margin: 0 auto 60px;
-  }
-  #todo-list h2 {
-    text-align: center;
-    font-weight: 800;
-    margin-bottom: 18px;
-    font-size: 1.6rem;
-    color: #8b2f66;
-    user-select:none;
-  }
-  #tasks {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
-  }
-  #tasks li {
-    background: #ffd9ed;
-    border-radius: 14px;
-    margin-bottom: 14px;
-    padding: 14px 20px;
-    font-weight: 700;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    user-select:none;
-    box-shadow: 0 4px 12px #d898b8aa;
-    transition: background-color 0.3s ease;
-  }
-  #tasks li.completed {
-    background: #b46082;
-    color: white;
-    text-decoration: line-through;
-  }
-  #tasks li input[type="checkbox"] {
-    margin-right: 16px;
-    width: 22px;
-    height: 22px;
-    cursor: pointer;
-  }
-
-  /* Kalpli Takvim */
-  #calendar {
-    max-width: 600px;
-    margin: 0 auto 60px;
-  }
-  #calendar h2 {
-    font-weight: 800;
-    font-size: 1.6rem;
-    color: #8b2f66;
-    margin-bottom: 18px;
-    text-align: center;
-    user-select:none;
-  }
-  #calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 14px;
-  }
-  .day {
-    background: #fce4ec;
-    border-radius: 16px;
-    padding-top: 100%;
-    position: relative;
-    font-weight: 600;
-    color: #702753;
-    box-shadow: 0 6px 14px rgba(220,140,186,0.3);
-    user-select:none;
-    transition: transform 0.2s ease;
-    cursor: default;
-  }
-  .day:hover:not(.past):not(.today) {
-    transform: scale(1.1);
-  }
-  .day.past {
-    background: #d376aa;
-    color: #fff;
-  }
-  .day.past::after {
-    content: "❤️";
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    font-size: 1.4rem;
-  }
-  .day.today {
-    outline: 4px solid #dd4da3;
-    cursor: default;
-  }
-
-  /* Kalp Yağmuru */
-  .heart {
-    position: fixed;
-    width: 28px;
-    height: 28px;
-    background: url('data:image/svg+xml;utf8,\
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 29"><path fill="%23dd4da3" d="M23.6 0c-3.1 0-5.4 1.8-7.6 4.3C13.9 1.8 11.6 0 8.4 0 3.8 0 0 3.8 0 8.4c0 7.3 5.7 9.8 15.9 20.3L16 29l.1-.1C26.3 18.2 32 15.7 32 8.4 32 3.8 28.2 0 23.6 0z"/></svg>') no-repeat center/contain;
-    pointer-events:none;
-    animation: fall 3.5s linear forwards;
-    z-index: 9999;
-  }
-  @keyframes fall {
-    0% {transform: translateY(-15vh) scale(0.5) rotate(0);}
-    100% {transform: translateY(110vh) scale(0.9) rotate(360deg); opacity: 0;}
-  }
-
-  /* Kalp Yağmuru Butonu */
-  #heart-btn {
-    display: block;
-    margin: 0 auto;
-    padding: 14px 40px;
-    border: none;
-    border-radius: 40px;
-    background: linear-gradient(90deg, #b23481, #dd4da3);
-    color: white;
-    font-weight: 700;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 8px 20px #dd4da3aa;
-    transition: background 0.3s, box-shadow 0.3s;
-  }
-  #heart-btn:hover {
-    background: linear-gradient(90deg, #dd4da3, #b23481);
-    box-shadow: 0 12px 28px #b23481cc;
-  }
-
-  /* Animasyon */
-  @keyframes fadeIn {
-    from {opacity: 0; transform: translateY(10px);}
-    to {opacity: 1; transform: translateY(0);}
-  }
-
-  /* Responsive */
-  @media (max-width: 600px) {
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eylülü Daily 🤍</title>
+  <style>
+    * {margin: 0; padding: 0; box-sizing: border-box;}
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+    .container {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    input[type=password] {
+      padding: 12px;
+      width: 100%;
+      font-size: 1.1rem;
+      border-radius: 30px;
+      border: 2px solid #d05cae;
+      margin: 20px 0;
+      outline: none;
+    }
+    button {
+      padding: 14px 0;
+      width: 100%;
+      font-weight: bold;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(90deg, #b23481, #dd4da3);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 5px 20px rgba(221, 77, 163, 0.4);
+    }
+    button:hover {
+      background: linear-gradient(90deg, #dd4da3, #b23481);
+    }
+    #error {
+      color: #d33a5a;
+      font-weight: bold;
+      margin-top: 10px;
+      display: none;
+    }
     #main-content {
-      padding: 30px 20px 40px;
-      max-width: 100%;
+      display: none;
     }
-    #todo-list, #calendar {
-      max-width: 100%;
+    .days-count, .goal-bar {
+      margin-top: 20px;
     }
-    header h1 {
-      font-size: 2.5rem;
+    .goal-bar {
+      background: #eee;
+      border-radius: 20px;
+      overflow: hidden;
+      height: 20px;
+      margin-top: 10px;
     }
-  }
-</style>
+    .goal-bar-fill {
+      background: linear-gradient(90deg, #ff80ab, #f06292);
+      height: 100%;
+      width: 0%;
+      text-align: right;
+      padding-right: 10px;
+      color: white;
+      font-size: 0.9rem;
+      line-height: 20px;
+      transition: width 1s ease-in-out;
+    }
+  </style>
 </head>
 <body>
 
-<div id="login-screen" role="main" aria-label="Giriş Ekranı">
-  <h2>🤍 Eylülü Daily 🤍</h2>
-  <p>Sadece sana özel, Eylül’üm 🌙</p>
-  <input
-    type="password"
-    id="password-input"
-    placeholder="Şifreyi gir"
-    autocomplete="off"
-    aria-label="Şifre"
-  />
-  <button id="login-btn" aria-label="Giriş Yap">Giriş Yap</button>
-  <p id="error-message" role="alert" aria-live="assertive">Şifre yanlış!</p>
-</div>
+  <div class="container" id="login-box">
+    <h1>🤍 Eylülü Daily 🤍</h1>
+    <input type="password" id="password" placeholder="Şifre: 03032025" />
+    <button onclick="checkPassword()">Giriş Yap</button>
+    <div id="error">Şifre yanlış!</div>
+  </div>
 
-<div id="main-content" aria-label="Ana İçerik">
-  <header>
-    <h1>🤍 Eylülü Daily</h1>
-    <p>Bugün <span id="day-count">0</span>. günümüz!</p>
-    <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="İlişki ilerleme durumu">
-      <div class="fill" id="progress-fill"><span id="progress-percent">0%</span></div>
+  <div class="container" id="main-content">
+    <h1>Hoşgeldin Eylül 🌸</h1>
+    <div class="days-count">
+      <h3>Beraberliğimizin kaçıncı günü?</h3>
+      <p><strong id="daysTogether">0</strong> gün oldu 🤍</p>
     </div>
-    <p>6. ayımıza <span id="days-left">0</span> gün kaldı!</p>
-  </header>
 
-  <section id="love-message" aria-live="polite" aria-atomic="true">
-    <p id="random-message">Yükleniyor...</p>
-  </section>
+    <div class="goal-bar-container">
+      <h3>6 Aylık Hedef</h3>
+      <div class="goal-bar">
+        <div class="goal-bar-fill" id="goalBarFill">0%</div>
+      </div>
+    </div>
+  </div>
 
-  <section id="todo-list">
-    <h2>✅ Birlikte Yapacaklarımız</h2>
-    <ul id="tasks" role="list">
-      <li role="listitem"><label><input type="checkbox" /> Göl kenarında piknik yapmak</label></li>
-      <li role="listitem"><label><input type="checkbox" /> Aynı filmi izlemek</label></li>
-      <li role="listitem"><label><input type="checkbox" /> Birlikte dans etmek</label></li>
-    </ul>
-  </section>
+  <script>
+    const correctPassword = "03032025";
+    const loginBox = document.getElementById("login-box");
+    const mainContent = document.getElementById("main-content");
+    const errorMsg = document.getElementById("error");
 
-  <section id="calendar">
-    <h2>📅 Kalpli Takvim</h2>
-    <div id="calendar-days"></div>
-  </section>
-
-  <section>
-    <button id="heart-btn" aria-label="Kalp Yağmuru Başlat">💖 Kalp Yağmuru Başlat</button>
-  </section>
-</div>
-
-<script>
-(() => {
-  const PASSWORD = "03032025";
-  const START_DATE = new Date("2025-03-03");
-  const SIX_MONTHS = new Date("2025-09-03");
-
-  const loveMessages = [
-    "Seninle konuşurken zaman duruyor.",
-    "Gülüşün en güzel şarkı gibi.",
-    "Her gün seni daha çok seviyorum.",
-    "Kalbim 03.03.2025'ten beri seninle atıyor.",
-    "Sen yanımdayken dünya pembe olur."
-  ];
-
-  const loginBtn = document.getElementById('login-btn');
-  const passwordInput = document.getElementById('password-input');
-  const errorMsg = document.getElementById('error-message');
-  const loginScreen = document.getElementById('login-screen');
-  const mainContent = document.getElementById('main-content');
-  const dayCountSpan = document.getElementById('day-count');
-  const daysLeftSpan = document.getElementById('days-left');
-  const progressFill = document.getElementById('progress-fill');
-  const progressPercent = document.getElementById('progress-percent');
-  const randomMessageP = document.getElementById('random-message');
-  const tasksUl = document.getElementById('tasks');
-  const calendarDays = document.getElementById('calendar-days');
-  const heartBtn = document.getElementById('heart-btn');
-
-  // Şifre kontrolü
-  loginBtn.addEventListener('click', () => {
-    if(passwordInput.value.trim() === PASSWORD) {
-      errorMsg.style.display = 'none';
-      loginScreen.style.display = 'none';
-      mainContent.style.display = 'block';
-      initSite();
-    } else {
-      errorMsg.style.display = 'block';
+    function checkPassword() {
+      const input = document.getElementById("password").value.trim();
+      if (input === correctPassword) {
+        loginBox.style.display = "none";
+        mainContent.style.display = "block";
+        calculateDays();
+      } else {
+        errorMsg.style.display = "block";
+      }
     }
-  });
 
-  passwordInput.addEventListener("keypress", e => {
-    if(e.key === "Enter") loginBtn.click();
-  });
+    function calculateDays() {
+      const startDate = new Date("2025-03-03");
+      const today = new Date();
+      const diffTime = today - startDate;
+      const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      document.getElementById("daysTogether").textContent = days;
 
-  // Gün sayacı + progress bar
-  function updateProgress() {
-    const now = new Date();
-    const diff = now - START_DATE;
-    const diffDays = Math.floor(diff / (1000*60*60*24));
-    const totalDays = Math.floor((SIX_MONTHS - START_DATE) / (1000*60*60*24));
-    const percent = Math.min(100, Math.max(0, Math.round((diffDays / totalDays) * 100)));
-    const daysLeft = Math.max(0, Math.ceil((SIX_MONTHS - now) / (1000*60*60*24)));
+      // 6 ay = yaklaşık 183 gün
+      const percent = Math.min(100, Math.floor((days / 183) * 100));
+      const bar = document.getElementById("goalBarFill");
+      bar.style.width = percent + "%";
+      bar.textContent = percent + "%";
+    }
 
-    dayCountSpan.textContent = diffDays;
-    daysLeftSpan.textContent = daysLeft;
-    progressFill.style.width = percent + "%";
-    progressPercent.textContent = percent + "%";
-    progressFill.parentElement.setAttribute('aria-valuenow', percent);
-  }
-
-  // Rastgele mesaj göster
-  function showRandomMessage() {
-    const msg = loveMessages[Math.floor(Math.random() * loveMessages.length)];
-    randomMessageP.textContent = msg;
-  }
-
-  // Yapılacaklar listesi: kaydet / yükle
-  function saveTasks() {
-    const tasks = [];
-    tasksUl.querySelectorAll('li').forEach(li => {
-      tasks.push(li.classList.contains('completed'));
+    document.getElementById("password").addEventListener("keypress", function (e) {
+      if (e.key === "Enter") checkPassword();
     });
-    localStorage.setItem('eyluludaily-tasks', JSON.stringify(tasks));
-  }
+  </script>
 
-  function loadTasks() {
-    const saved = localStorage.getItem('eyluludaily-tasks');
-    if(saved) {
-      const arr = JSON.parse(saved);
-      const lis = tasksUl.querySelectorAll('li');
-      lis.forEach((li, i) => {
-        if(arr[i]) {
-          li.classList.add('completed');
-          li.querySelector('input[type="checkbox"]').checked = true;
-        }
-      });
-    }
-  }
-
-  // Checkbox click event
-  tasksUl.addEventListener('change', e => {
-    if(e.target.tagName === "INPUT" && e.target.type === "checkbox") {
-      const li = e.target.closest('li');
-      if(e.target.checked) {
-        li.classList.add('completed');
-      } else {
-        li.classList.remove('completed');
-      }
-      saveTasks();
-    }
-  });
-
-  // Takvim oluşturma
-  function createCalendar() {
-    calendarDays.innerHTML = "";
-    const today = new Date();
-    const start = new Date(START_DATE);
-    for(let d = new Date(start); d <= today; d.setDate(d.getDate() + 1)) {
-      const dayDiv = document.createElement("div");
-      dayDiv.classList.add("day");
-      dayDiv.textContent = d.getDate();
-
-      if(d.toDateString() === today.toDateString()) {
-        dayDiv.classList.add("today");
-      } else {
-        dayDiv.classList.add("past");
-      }
-
-      calendarDays.appendChild(dayDiv);
-    }
-  }
-
-  // Kalp yağmuru
-  function createHeart() {
-    const heart = document.createElement('div');
-    heart.classList.add('heart');
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration =
+</body>
+</html>

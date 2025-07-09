@@ -1,80 +1,156 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Eylülü Daily 🤍</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    :root {
-      --baby-blue: #d0f0fd;
-      --soft-pink: #ffe0ec;
-      --main-text: #333;
-      --light: #fff;
-    }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      background: linear-gradient(to bottom, var(--baby-blue), var(--soft-pink));
-      color: var(--main-text);
-    }
-    .login, .app {
-      max-width: 800px;
-      margin: 60px auto;
-      background: var(--light);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    .hidden { display: none; }
-    h1, h2 { text-align: center; }
-    input[type="text"], textarea, input[type="date"] {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    button {
-      background-color: #555;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    ul { padding-left: 20px; }
-    li {
-      list-style: none;
-      margin: 8px 0;
-    }
-    .todo-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
-      margin-top: 20px;
-    }
-    .calendar div {
-      background: var(--baby-blue);
-      padding: 10px;
-      border-radius: 8px;
-      min-height: 60px;
-    }
-    .emoji { font-size: 24px; cursor: pointer; margin: 0 5px; }
-    .highlight { font-weight: bold; color: darkred; }
-  </style>
+<meta charset="UTF-8" />
+<title>Eylülü Daily 🤍</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --baby-blue: #d0f0fd;
+    --soft-pink: #ffe0ec;
+    --main-text: #333;
+    --light: #fff;
+    --checkbox-bg: #fce4ec;
+    --checkbox-border: #f48fb1;
+    --checkbox-checked-bg: #f48fb1;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: linear-gradient(to bottom, var(--baby-blue), var(--soft-pink));
+    color: var(--main-text);
+  }
+  .login, .app {
+    max-width: 800px;
+    margin: 60px auto;
+    background: var(--light);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  .hidden { display: none; }
+  h1, h2 { text-align: center; }
+  input[type="text"], textarea, input[type="date"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  ul {
+    padding-left: 0;
+    list-style: none;
+  }
+  li.todo-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: var(--checkbox-bg);
+    margin-bottom: 8px;
+    transition: background-color 0.3s ease;
+  }
+  li.todo-item:hover {
+    background: #f8bbd0;
+  }
+  li.todo-item.completed span {
+    text-decoration: line-through;
+    color: #999;
+  }
+  li.todo-item span {
+    flex-grow: 1;
+    font-size: 1.1rem;
+  }
+  li.todo-item button.delete-btn {
+    background: #f48fb1;
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  li.todo-item button.delete-btn:hover {
+    background: #ec407a;
+  }
+  /* Custom checkbox */
+  li.todo-item input[type="checkbox"] {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--checkbox-border);
+    border-radius: 6px;
+    background-color: var(--checkbox-bg);
+    cursor: pointer;
+    position: relative;
+  }
+  li.todo-item input[type="checkbox"]:checked {
+    background-color: var(--checkbox-checked-bg);
+    border-color: var(--checkbox-checked-bg);
+  }
+  li.todo-item input[type="checkbox"]:checked::after {
+    content: "✔";
+    position: absolute;
+    top: 1px;
+    left: 5px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .calendar div {
+    background: var(--baby-blue);
+    padding: 10px;
+    border-radius: 8px;
+    min-height: 60px;
+  }
+  .emoji {
+    font-size: 24px;
+    cursor: pointer;
+    margin: 0 6px;
+    user-select: none;
+  }
+  .emoji:hover {
+    transform: scale(1.3);
+  }
+  #moodDisplay {
+    margin-top: 10px;
+    font-weight: 600;
+    text-align: center;
+  }
+  #error {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 600;
+  }
+</style>
 </head>
 <body>
 
 <div class="login" id="loginBox">
   <h2>🔒 Eylülü Daily</h2>
-  <input type="password" id="password" placeholder="Şifre: 03032025">
+  <input type="password" id="password" placeholder="Şifre: 03032025" />
   <button onclick="checkPassword()">Giriş Yap</button>
-  <p id="error" style="color:red; display:none;">Şifre yanlış 😢</p>
+  <p id="error" style="display:none;">Sen Eylülü değil misin yoksa? 💔</p>
 </div>
 
 <div class="app hidden" id="mainApp">
@@ -82,7 +158,7 @@
   <div id="counter">Beraberliğimiz: hesaplanıyor...</div>
 
   <h2>📝 Yapılacaklar Listesi</h2>
-  <input type="text" id="todoInput" placeholder="Bir şeyler yaz...">
+  <input type="text" id="todoInput" placeholder="Bir şeyler yaz..." />
   <button onclick="addTodo()">Ekle</button>
   <ul id="todoList"></ul>
 
@@ -99,7 +175,7 @@
 
   <h2>📨 Zaman Kapsülü</h2>
   <textarea id="capsuleText" placeholder="Geleceğe bir not bırak..."></textarea>
-  <input type="date" id="capsuleDate">
+  <input type="date" id="capsuleDate" />
   <button onclick="saveCapsule()">Kaydet</button>
   <p id="capsuleMessage"></p>
 
@@ -122,12 +198,15 @@
 
   function checkPassword() {
     const val = document.getElementById("password").value;
+    const errorP = document.getElementById("error");
     if (val === PASSWORD) {
+      errorP.style.display = "none";
       document.getElementById("loginBox").classList.add("hidden");
       document.getElementById("mainApp").classList.remove("hidden");
       init();
     } else {
-      document.getElementById("error").style.display = "block";
+      errorP.innerText = "Sen Eylülü değil misin yoksa? 💔";
+      errorP.style.display = "block";
     }
   }
 
@@ -157,8 +236,8 @@
     li.className = "todo-item";
     li.innerHTML = `
       <input type="checkbox" onchange="saveTodos()">
-      <span>${val}</span>
-      <button onclick="confirmDelete(this)">❌</button>
+      <span>${escapeHtml(val)}</span>
+      <button class="delete-btn" onclick="confirmDelete(this)">❌</button>
     `;
     document.getElementById("todoList").appendChild(li);
     document.getElementById("todoInput").value = "";
@@ -177,7 +256,7 @@
     document.querySelectorAll("#todoList li").forEach(li => {
       const checked = li.querySelector("input").checked;
       const text = li.querySelector("span").innerText;
-      items.push({text, checked});
+      items.push({ text, checked });
     });
     localStorage.setItem("todos", JSON.stringify(items));
   }
@@ -188,16 +267,16 @@
       const li = document.createElement("li");
       li.className = "todo-item";
       li.innerHTML = `
-        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="saveTodos()">
-        <span>${item.text}</span>
-        <button onclick="confirmDelete(this)">❌</button>
+        <input type="checkbox" ${item.checked ? "checked" : ""} onchange="saveTodos()">
+        <span>${escapeHtml(item.text)}</span>
+        <button class="delete-btn" onclick="confirmDelete(this)">❌</button>
       `;
       document.getElementById("todoList").appendChild(li);
     });
   }
 
   function loadPlanner() {
-    ['pzt','sal','car','per','cum','cmt','paz'].forEach(id => {
+    ["pzt", "sal", "car", "per", "cum", "cmt", "paz"].forEach(id => {
       const el = document.getElementById(id);
       el.value = localStorage.getItem("plan_" + id) || "";
       el.addEventListener("input", () => {
@@ -212,7 +291,7 @@
       "Eylülle Eren tamamdır 🌈",
       "Kalbim seninle tam 🫶",
       "Sonsuza kadar birlikte 💑",
-      "Her şey seninle güzel 🌸"
+      "Her şey seninle güzel 🌸",
     ];
     const msg = msgs[Math.floor(Math.random() * msgs.length)];
     document.getElementById("dailyLove").innerText = msg;
@@ -245,6 +324,17 @@
     if (date && today >= date) {
       document.getElementById("capsuleMessage").innerText = "🎁 Mesajın: " + note;
     }
+  }
+
+  function escapeHtml(text) {
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
   }
 </script>
 

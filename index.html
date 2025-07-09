@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Eylülü Daily</title>
 <style>
+  /* Genel */
   * {
     box-sizing: border-box;
   }
   body {
-    margin: 0; padding: 20px;
+    margin:0; padding:20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #fce4ec, #f8bbd0);
     color: #4a235a;
@@ -88,7 +89,7 @@
   .progress-bar {
     background: #f7d1e7;
     border-radius: 40px;
-    height: 26px;
+    height: 28px;
     overflow: hidden;
     position: relative;
     margin-bottom: 20px;
@@ -103,7 +104,7 @@
   }
   .progress-bar .fill span {
     position: absolute;
-    right: 12px;
+    right: 14px;
     top: 50%;
     transform: translateY(-50%);
     font-weight: 700;
@@ -155,6 +156,7 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 10px;
+    margin-bottom: 30px;
   }
   .day {
     background: #fce4ec;
@@ -163,7 +165,7 @@
     position: relative;
     font-weight: 600;
     color: #702753;
-    cursor: pointer;
+    cursor: default;
     box-shadow: 0 3px 6px rgba(220,140,186,0.3);
     user-select:none;
     transition: transform 0.2s ease;
@@ -242,91 +244,4 @@
   </section>
 
   <section>
-    <h2>💖 Biraz Kalp Yağsın mı?</h2>
-    <button id="heart-btn">Kalp Yağmuru Başlat</button>
-  </section>
-</div>
-
-<script>
-(() => {
-  const PASSWORD = "03032025";
-  const START_DATE = new Date("2025-03-03");
-  const SIX_MONTHS = new Date("2025-09-03");
-
-  // Mesajlar (kalın)
-  const loveMessages = [
-    "Seninle konuşurken zaman duruyor.",
-    "Gülüşün en güzel şarkı gibi.",
-    "Her gün seni daha çok seviyorum.",
-    "Kalbim 03.03.2025'ten beri seninle atıyor.",
-    "Sen yanımdayken dünya pembe olur."
-  ];
-
-  // DOM elemanları
-  const loginBtn = document.getElementById('login-btn');
-  const passwordInput = document.getElementById('password-input');
-  const errorMsg = document.getElementById('error-message');
-  const loginScreen = document.getElementById('login-screen');
-  const mainContent = document.getElementById('main-content');
-  const dayCountSpan = document.getElementById('day-count');
-  const daysLeftSpan = document.getElementById('days-left');
-  const progressFill = document.getElementById('progress-fill');
-  const progressPercent = document.getElementById('progress-percent');
-  const randomMessageP = document.getElementById('random-message');
-  const tasksUl = document.getElementById('tasks');
-  const calendarDays = document.getElementById('calendar-days');
-  const heartBtn = document.getElementById('heart-btn');
-
-  // Şifre kontrolü
-  loginBtn.addEventListener('click', () => {
-    if(passwordInput.value.trim() === PASSWORD) {
-      errorMsg.style.display = 'none';
-      loginScreen.style.display = 'none';
-      mainContent.style.display = 'block';
-      initSite();
-    } else {
-      errorMsg.style.display = 'block';
-    }
-  });
-
-  // Gün sayacı ve progress bar
-  function updateProgress() {
-    const now = new Date();
-    const diff = now - START_DATE;
-    const diffDays = Math.floor(diff / (1000*60*60*24));
-    const totalDays = Math.floor((SIX_MONTHS - START_DATE) / (1000*60*60*24));
-    const percent = Math.min(100, Math.max(0, Math.round((diffDays / totalDays) * 100)));
-    const daysLeft = Math.max(0, Math.ceil((SIX_MONTHS - now) / (1000*60*60*24)));
-
-    dayCountSpan.textContent = diffDays;
-    daysLeftSpan.textContent = daysLeft;
-    progressFill.style.width = percent + "%";
-    progressPercent.textContent = percent + "%";
-  }
-
-  // Rasgele mesaj göster
-  function showRandomMessage() {
-    const msg = loveMessages[Math.floor(Math.random() * loveMessages.length)];
-    randomMessageP.textContent = msg;
-  }
-
-  // Yapılacaklar listesi kaydetme/yükleme
-  function saveTasks() {
-    const tasks = [];
-    tasksUl.querySelectorAll('li').forEach(li => {
-      tasks.push(li.classList.contains('completed'));
-    });
-    localStorage.setItem('eyluludaily-tasks', JSON.stringify(tasks));
-  }
-
-  function loadTasks() {
-    const saved = localStorage.getItem('eyluludaily-tasks');
-    if(saved) {
-      const arr = JSON.parse(saved);
-      const lis = tasksUl.querySelectorAll('li');
-      lis.forEach((li, i) => {
-        if(arr[i]) {
-          li.classList.add('completed');
-          li.querySelector('input[type="checkbox"]').checked = true;
-        } else {
-         
+    <h2>💖 Biraz Kalp Yağs
